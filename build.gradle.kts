@@ -5,9 +5,16 @@ plugins {
 }
 
 group = "io.oira"
-version = findProperty("projectVersion")?.toString() ?: "1.0.0"
+version = "beta1"
+
+tasks.register<Delete>("cleanDist") {
+    delete("$rootDir/dist")
+}
 
 allprojects {
+    group = rootProject.group
+    version = rootProject.version
+
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")

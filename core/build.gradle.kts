@@ -7,7 +7,6 @@ plugins {
 }
 
 group = "io.oira"
-version = "1.0"
 
 repositories {
     maven("https://repo.flyte.gg/releases")
@@ -67,22 +66,24 @@ tasks.jar {
 }
 
 tasks.shadowJar {
-    archiveFileName.set("FluxEco-$version.jar")
+    archiveBaseName.set("FluxEco")
+    archiveVersion.set(project.version.toString())
+    archiveClassifier.set("")
+    destinationDirectory.set(file("$rootDir/dist"))
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     mergeServiceFiles()
 
     relocate("com.tcoded.folialib", "io.oira.fluxeco.lib.folialib")
     relocate("de.rapha149.signgui", "io.oira.fluxeco.lib.signgui")
 
-    exclude("kotlin/**")
-    exclude("kotlinx/**")
-    exclude("org/jetbrains/kotlin/**")
-    exclude("org/jetbrains/kotlinx/**")
-    exclude("org/jetbrains/annotations/**")
-    exclude("org/intellij/**")
-    exclude("META-INF/kotlin*")
-    exclude("META-INF/*.kotlin_module")
+    exclude("kotlin/**", "kotlinx/**", "org/jetbrains/**", "org/intellij/**", "META-INF/kotlin*", "META-INF/*.kotlin_module")
 
     from(project(":api").sourceSets["main"].output)
+}
+
+tasks.clean {
+    dependsOn(":cleanDist")
 }
 
 tasks.build {
@@ -101,4 +102,3 @@ tasks.processResources {
 tasks.runServer {
     minecraftVersion("1.21")
 }
-

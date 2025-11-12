@@ -3,6 +3,15 @@
   <component name="CopilotDiffPersistence">
     <option name="pendingDiffs">
       <map>
+        <entry key="$PROJECT_DIR$/api/build.gradle.kts">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/api/build.gradle.kts" />
+              <option name="originalContent" value="plugins {&#10;    id(&quot;org.jetbrains.kotlin.jvm&quot;)&#10;    id(&quot;org.jetbrains.dokka&quot;)&#10;}&#10;&#10;group = &quot;io.oira&quot;&#10;&#10;java {&#10;    withSourcesJar()&#10;    withJavadocJar()&#10;}&#10;&#10;tasks.jar {&#10;    archiveBaseName.set(&quot;FluxEco-API&quot;) // final jar will be like FluxEco-API-1.0.0.jar&#10;    destinationDirectory.set(file(&quot;$rootDir/dist&quot;))&#10;    duplicatesStrategy = DuplicatesStrategy.EXCLUDE&#10;}&#10;&#10;dependencies {&#10;    compileOnly(&quot;io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT&quot;)&#10;}&#10;" />
+              <option name="updatedContent" value="plugins {&#10;    id(&quot;org.jetbrains.kotlin.jvm&quot;)&#10;    id(&quot;org.jetbrains.dokka&quot;)&#10;}&#10;&#10;group = &quot;io.oira&quot;&#10;&#10;java {&#10;    withSourcesJar()&#10;    withJavadocJar()&#10;}&#10;&#10;tasks.jar {&#10;    archiveBaseName.set(&quot;FluxEco-API&quot;) // final jar will be like FluxEco-API-1.0.0.jar&#10;    destinationDirectory.set(file(&quot;$rootDir/dist&quot;))&#10;    duplicatesStrategy = DuplicatesStrategy.EXCLUDE&#10;}&#10;&#10;dependencies {&#10;    compileOnly(&quot;io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT&quot;)&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/main/kotlin/io/oira/fluxeco/manager/ConfigManager.kt">
           <value>
             <PendingDiffInfo>

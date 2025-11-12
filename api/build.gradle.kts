@@ -4,7 +4,6 @@ plugins {
 }
 
 group = "io.oira"
-version = findProperty("projectVersion")?.toString() ?: "1.0.0"
 
 java {
     withSourcesJar()
@@ -12,7 +11,9 @@ java {
 }
 
 tasks.jar {
-    archiveBaseName.set("FluxEco-API") // final jar will be like FluxEco-API-1.0.0.jar
+    archiveBaseName.set("FluxEco-API")
+    archiveVersion.set(project.version.toString())
+    destinationDirectory.set(file("$rootDir/dist"))
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
