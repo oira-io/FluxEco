@@ -6,6 +6,7 @@ import io.oira.fluxeco.core.data.manager.PlayerProfileManager
 import io.oira.fluxeco.core.data.model.Balance
 import io.oira.fluxeco.core.gui.BaseGUI
 import io.oira.fluxeco.core.manager.EconomyManager
+import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.format
 import org.bukkit.Bukkit
@@ -308,7 +309,23 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
 
     override fun open(player: Player) {
         if (shouldRefreshBalances()) {
-            loadBalances()
+            if (RedisManager.isEnabled) {
+                val redisCache = RedisManager.getCache()
+                if (redisCache != null && !redisCache.shouldRefreshBaltop()) {
+                    val cachedBaltop = redisCache.getBaltopFromCache()
+                    if (cachedBaltop != null) {
+                        balances = cachedBaltop.map { entry ->
+                            Balance(entry.uuid, entry.balance)
+                        }
+                    } else {
+                        loadBalances()
+                    }
+                } else {
+                    loadBalances()
+                }
+            } else {
+                loadBalances()
+            }
             lastRefreshTime = System.currentTimeMillis()
         }
 

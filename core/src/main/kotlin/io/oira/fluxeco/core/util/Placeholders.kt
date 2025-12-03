@@ -103,6 +103,8 @@ class Placeholders {
 
     fun getPlaceholders(): Map<String, String> = placeholders.toMap()
 
+    fun toMap(): Map<String, String> = placeholders.toMap()
+
     fun isEmpty(): Boolean = placeholders.isEmpty()
 
     fun isNotEmpty(): Boolean = placeholders.isNotEmpty()

@@ -11,6 +11,7 @@ import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.format
 import io.oira.fluxeco.core.util.parseNum
 import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
+import io.oira.fluxeco.core.redis.RedisManager
 import org.bukkit.entity.Player
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Description
@@ -90,14 +91,24 @@ class PayCommand {
                         .add("balance", newSenderBalance.format())
 
                     messageManager.sendMessageFromConfig(sender, "pay.success", placeholders, config = configManager)
-                    offlinePlayer.player?.let { onlineTarget ->
-                        val targetPlaceholders = Placeholders()
-                            .add("player", sender.name)
-                            .add("amount", parsedAmount.format())
-                        if (SettingsManager.getPayAlerts(offlinePlayer.uniqueId)) {
+
+                    if (SettingsManager.getPayAlerts(offlinePlayer.uniqueId)) {
+                        val onlineTarget = offlinePlayer.player
+                        if (onlineTarget != null && onlineTarget.isOnline) {
+                            val targetPlaceholders = Placeholders()
+                                .add("player", sender.name)
+                                .add("amount", parsedAmount.format())
                             messageManager.sendMessageFromConfig(onlineTarget, "pay.receive", targetPlaceholders, config = configManager)
+                        } else if (RedisManager.isEnabled) {
+                            RedisManager.getPublisher()?.publishPaymentNotification(
+                                offlinePlayer.uniqueId,
+                                sender.name,
+                                parsedAmount,
+                                parsedAmount.format()
+                            )
                         }
                     }
+
                     SoundManager.getInstance().playTeleportSound(sender, configManager)
                 }
             } else {

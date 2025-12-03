@@ -49,6 +49,7 @@ gradlew.bat
 !gradlew.bat
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
+.gradle
 
 # --- Kotlin/Java specific ---
 *.kotlin_module
@@ -64,3 +65,5 @@ gradlew.bat
 # --- Module-specific ---
 /api/build/
 /core/build/
+
+.DS_Store

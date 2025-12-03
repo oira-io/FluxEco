@@ -7,11 +7,13 @@ import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.MessageManager
 import io.oira.fluxeco.core.manager.SoundManager
 import io.oira.fluxeco.core.manager.TransactionManager
+import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.Threads
 import io.oira.fluxeco.core.util.format
 import io.oira.fluxeco.core.util.parseNum
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Description
 import revxrsal.commands.annotation.Named
@@ -27,6 +29,23 @@ class EcoCommand {
     private val messageManager: MessageManager = MessageManager.getInstance()
     private val configManager = ConfigManager(plugin, "messages.yml")
     private val foliaLib = FluxEco.instance.foliaLib
+
+    private fun sendCrossServerMessage(
+        targetPlayer: OfflinePlayer,
+        messageKey: String,
+        placeholders: Placeholders
+    ) {
+        val onlinePlayer = targetPlayer.player
+        if (onlinePlayer != null && onlinePlayer.isOnline) {
+            messageManager.sendMessageFromConfig(onlinePlayer, messageKey, placeholders, config = configManager)
+        } else if (RedisManager.isEnabled) {
+            RedisManager.getPublisher()?.publishEconomyNotification(
+                targetPlayer.uniqueId,
+                messageKey,
+                placeholders.toMap()
+            )
+        }
+    }
 
     @Subcommand("give")
     @Description("Gives money to a player.")
@@ -295,9 +314,9 @@ class EcoCommand {
                     .add("balance", "0.0")
 
                 messageManager.sendMessageFromConfig(actor, "economy.reset-success", placeholders, config = configManager)
-                offlinePlayer.player?.let { onlinePlayer ->
-                    messageManager.sendMessageFromConfig(onlinePlayer, "economy.balance-reset", placeholders, config = configManager)
-                }
+
+                sendCrossServerMessage(offlinePlayer, "economy.balance-reset", placeholders)
+
                 SoundManager.getInstance().playTeleportSound(actor, configManager)
             }
         }

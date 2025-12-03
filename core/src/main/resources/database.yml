@@ -15,11 +15,22 @@ database:
   mysql:
     host: localhost  # MySQL server address (e.g., 127.0.0.1 or your host)
     port: 3306  # MySQL server port (default is 3306)
-    database: kyver  # Name of the MySQL database to use
+    database: fluxeco  # Name of the MySQL database to use
     username: root  # MySQL username with access to the database
     password: password  # MySQL password for the username
     poolSize: 6  # Number of connections to maintain in the pool
     ssl: false  # Enable SSL for secure connections (set to true if required)
     uri: ""  # Custom JDBC URI (overrides all above settings if set)
   mongodb:
-    uri: mongodb://localhost:27017/kyver  # MongoDB connection URI (includes host, port, database)
+    uri: mongodb://localhost:27017/fluxeco  # MongoDB connection URI (includes host, port, database)
+
+redis:
+  enabled: false  # Enable or disable Redis cross-server support, requires MySQL or MongoDB
+  server-id: "server1"  # Unique identifier for this server (change for each server in your network)
+  host: localhost  # Redis server address (e.g.,
+  port: 6379  # Redis server port (default is 6379)
+  username: ""  # Redis username (leave empty if not used)
+  password: ""  # Redis password (leave empty if no password is set)
+  database: 0  # Redis database index (default is 0)
+  timeout: 2000  # Connection timeout in milliseconds
+  poolSize: 10  # Number of connections to maintain in the pool

@@ -25,6 +25,7 @@ import io.oira.fluxeco.core.listener.PlayerJoinListener
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.EconomyManager
 import io.oira.fluxeco.core.manager.MessageManager
+import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.DateFormatter
 import io.oira.fluxeco.core.util.NumberFormatter
 import io.oira.fluxeco.core.util.Placeholders
@@ -121,6 +122,14 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    private fun initializeRedis() {
+        try {
+            RedisManager.init()
+        } catch (e: Exception) {
+            logger.warning("Failed to initialize Redis: ${e.message}")
+        }
+    }
+
     private fun initializeAPI(configManager: ConfigManager) {
         try {
             val economyManager = EconomyManagerImpl(this, configManager)
@@ -154,11 +163,21 @@ class FluxEco : JavaPlugin() {
                 }
                 .suggestionProviders { suggestions ->
                     suggestions.addProvider(AsyncOfflinePlayer::class.java) { _ ->
+                        val names = mutableSetOf<String>()
+
                         Bukkit.getOnlinePlayers()
                             .filter { player ->
                                 !player.hasMetadata("vanished") || player.getMetadata("vanished").all { !it.asBoolean() }
                             }
-                            .map { it.name }
+                            .forEach { names.add(it.name) }
+
+                        if (RedisManager.isEnabled) {
+                            RedisManager.getCache()?.getAllPlayerNames()?.let { redisNames ->
+                                names.addAll(redisNames)
+                            }
+                        }
+
+                        names
                     }
                 }
                 .build()

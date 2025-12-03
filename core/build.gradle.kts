@@ -47,6 +47,8 @@ dependencies {
 
     implementation("de.rapha149.signgui:signgui:2.5.4")
     implementation("com.tcoded:FoliaLib:0.5.1")
+
+    compileOnly("redis.clients:jedis:5.1.0")
 }
 
 val targetJavaVersion = 21

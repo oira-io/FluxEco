@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import io.oira.fluxeco.core.data.manager.PlayerProfileManager
 import io.oira.fluxeco.core.data.manager.BalancesDataManager
 import io.oira.fluxeco.core.manager.EconomyManager
+import io.oira.fluxeco.core.redis.RedisManager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -39,6 +40,11 @@ class PlayerJoinListener : Listener {
 
         if (BalancesDataManager.getBalance(uuid) == null) {
             EconomyManager.createBalance(uuid)
+        }
+
+        if (RedisManager.isEnabled) {
+            RedisManager.getCache()?.addPlayer(uuid, name)
+            RedisManager.getPublisher()?.publishPlayerJoin(uuid, name, RedisManager.serverId)
         }
     }
 }

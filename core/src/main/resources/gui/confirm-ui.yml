@@ -1,0 +1,59 @@
+#  ______ _            ______
+# |  ____| |          |  ____|
+# | |__  | |_   ___  _| |__   ___ ___
+# |  __| | | | | \ \/ /  __| / __/ _ \
+# | |    | | |_| |>  <| |___| (_| (_) |
+# |_|    |_|\__,_/_/\_\______\___\___/
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                   ⚙ Baltop GUU Configuration ⚙
+#             Website:        https://oira.io
+#             Documentation:  https://oira.io/docs
+#             Discord:        https://discord.gg/oira
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "ᴄᴏɴꜰɪʀᴍ ᴘᴀʏᴍᴇɴᴛ"  # {page} and {max-page} are dynamic placeholders
+
+gui-size: 27
+
+items:
+  cancel:
+    material: RED_STAINED_GLASS_PANE
+    name: "&#FF0000ᴄᴀɴᴄᴇʟ"
+    lore:
+      - "&fClick to cancel the payment"
+    slot: 10
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  confirm:
+    material: LIME_STAINED_GLASS_PANE
+    name: "&#00FF00ᴄᴏɴꜰɪʀᴍ"
+    lore:
+      - "&fClick to confirm the payment"
+    slot: 16
+    action: "confirm"
+    sound: UI_BUTTON_CLICK
+
+  player:
+    material: PLAYER_HEAD
+    name: "&#E53935ᴘʟᴀʏᴇʀ"
+    lore:
+      - "&7{player}"
+    slot: 13
+    action: "player"
+    sound: UI_BUTTON_CLICK
+
+sounds:
+  enabled: true
+  open: UI_BUTTON_CLICK
+  close: UI_BUTTON_CLICK
+  error: ENTITY_VILLAGER_NO
+
+messages:
+  open: "&aShowing top players by balance. Total: &e{total}"
+  entry-click: "&a{player} &7- Rank: &e#{rank} &7- Balance: &a{balance}"
+  previous-page-error: "&cYou are already on the first page!"
+  next-page-error: "&cYou are already on the last page!"
+  refresh-cooldown: "&cPlease wait {remaining} seconds before refreshing again."
+  refresh-success: "&aBalances refreshed!"
+  search-not-implemented: "&cSearch feature not implemented yet."
+  player-data-not-found: "&cPlayer data not found."

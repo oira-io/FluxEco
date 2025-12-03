@@ -28,3 +28,6 @@ libraries:
   - "io.github.revxrsal:lamp.common:4.0.0-rc.13"
   - "io.github.revxrsal:lamp.bukkit:4.0.0-rc.13"
   - "io.github.revxrsal:lamp.brigadier:4.0.0-rc.13"
+  - "redis.clients:jedis:5.1.0"
+  - "org.apache.commons:commons-pool2:2.12.0"
+  - "org.slf4j:slf4j-api:2.0.9"
