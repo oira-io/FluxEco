@@ -10,9 +10,9 @@ replay_pid*
 /out/
 /bin/
 /dist/
-/.gradle/
-/.gradle-cache/
-/.gradle-build-cache/
+.gradle/
+.gradle-cache/
+.gradle-build-cache/
 
 # --- IDE ---
 # IntelliJ / Android Studio
@@ -66,4 +66,3 @@ gradlew.bat
 /api/build/
 /core/build/
 .kotlin
-/.idea
