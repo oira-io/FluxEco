@@ -65,5 +65,4 @@ gradlew.bat
 # --- Module-specific ---
 /api/build/
 /core/build/
-
-.DS_Store
+.kotlin

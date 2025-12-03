@@ -136,7 +136,13 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
 
     private fun loadBalances() {
         balances = try {
-            EconomyManager.getAllBalances().sortedByDescending { it.balance }
+            val allBalances = EconomyManager.getAllBalances().sortedByDescending { it.balance }
+
+            if (RedisManager.isEnabled) {
+                RedisManager.getCache()?.updateBaltopCache(allBalances)
+            }
+
+            allBalances
         } catch (e: Exception) {
             plugin.logger.warning("Failed to load balances: ${e.message}")
             emptyList()

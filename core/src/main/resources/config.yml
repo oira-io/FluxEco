@@ -22,6 +22,8 @@ general:
   id-format: sequential # "random" or "sequential"
   # Whether to allow offline payments
   allow-offline-payments: true
+  # Whether to enable the confirm gui for payments
+  confirm-payments: false
 
 # This is all used by Vault
 currency:

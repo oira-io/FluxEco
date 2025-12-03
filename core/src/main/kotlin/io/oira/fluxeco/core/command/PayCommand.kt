@@ -24,7 +24,8 @@ class PayCommand {
 
     private val plugin: FluxEco = FluxEco.instance
     private val messageManager: MessageManager = MessageManager.getInstance()
-    private val configManager = ConfigManager(plugin, "messages.yml")
+    private val messagesConfigManager = ConfigManager(plugin, "messages.yml")
+    private val mainConfigManager = ConfigManager(plugin, "config.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
     @Description("Pays money to another player.")
@@ -33,14 +34,14 @@ class PayCommand {
         val parsedAmount = try {
             amount.parseNum()
         } catch (_: Exception) {
-            messageManager.sendMessageFromConfig(sender, "general.invalid-amount", config = configManager)
-            SoundManager.getInstance().playErrorSound(sender, configManager)
+            messageManager.sendMessageFromConfig(sender, "general.invalid-amount", config = messagesConfigManager)
+            SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
             return
         }
 
         if (parsedAmount <= 0) {
-            messageManager.sendMessageFromConfig(sender, "general.invalid-amount", config = configManager)
-            SoundManager.getInstance().playErrorSound(sender, configManager)
+            messageManager.sendMessageFromConfig(sender, "general.invalid-amount", config = messagesConfigManager)
+            SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
             return
         }
 
@@ -48,15 +49,15 @@ class PayCommand {
             val offlinePlayer = target.getOrFetch()
             if (offlinePlayer.player == null && !plugin.config.getBoolean("general.allow-offline-payments")) {
                 foliaLib.scheduler.run {
-                    messageManager.sendMessageFromConfig(sender, "pay.offline-disabled", config = configManager)
-                    SoundManager.getInstance().playErrorSound(sender, configManager)
+                    messageManager.sendMessageFromConfig(sender, "pay.offline-disabled", config = messagesConfigManager)
+                    SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
                 }
                 return@runAsync
             }
             if (offlinePlayer.uniqueId == sender.uniqueId) {
                 foliaLib.scheduler.run {
-                    messageManager.sendMessageFromConfig(sender, "pay.self", config = configManager)
-                    SoundManager.getInstance().playErrorSound(sender, configManager)
+                    messageManager.sendMessageFromConfig(sender, "pay.self", config = messagesConfigManager)
+                    SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
                 }
                 return@runAsync
             }
@@ -64,8 +65,8 @@ class PayCommand {
             if (!SettingsManager.getTogglePayments(offlinePlayer.uniqueId)) {
                 foliaLib.scheduler.run {
                     val placeholders = Placeholders().add("player", target.getName())
-                    messageManager.sendMessageFromConfig(sender, "pay.disabled", placeholders, config = configManager)
-                    SoundManager.getInstance().playErrorSound(sender, configManager)
+                    messageManager.sendMessageFromConfig(sender, "pay.disabled", placeholders, config = messagesConfigManager)
+                    SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
                 }
                 return@runAsync
             }
@@ -73,8 +74,17 @@ class PayCommand {
             val senderBalance = EconomyManager.getBalance(sender.uniqueId)
             if (senderBalance < parsedAmount) {
                 foliaLib.scheduler.run {
-                    messageManager.sendMessageFromConfig(sender, "pay.insufficient-funds", config = configManager)
-                    SoundManager.getInstance().playErrorSound(sender, configManager)
+                    messageManager.sendMessageFromConfig(sender, "pay.insufficient-funds", config = messagesConfigManager)
+                    SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
+                }
+                return@runAsync
+            }
+
+            // Check if confirmation GUI is enabled
+            val confirmPayments = mainConfigManager.getConfig().getBoolean("general.confirm-payments", false)
+            if (confirmPayments) {
+                foliaLib.scheduler.run {
+                    plugin.confirmPaymentGui.openForPayment(sender, offlinePlayer, parsedAmount)
                 }
                 return@runAsync
             }
@@ -90,7 +100,7 @@ class PayCommand {
                         .add("amount", parsedAmount.format())
                         .add("balance", newSenderBalance.format())
 
-                    messageManager.sendMessageFromConfig(sender, "pay.success", placeholders, config = configManager)
+                    messageManager.sendMessageFromConfig(sender, "pay.success", placeholders, config = messagesConfigManager)
 
                     if (SettingsManager.getPayAlerts(offlinePlayer.uniqueId)) {
                         val onlineTarget = offlinePlayer.player
@@ -98,7 +108,7 @@ class PayCommand {
                             val targetPlaceholders = Placeholders()
                                 .add("player", sender.name)
                                 .add("amount", parsedAmount.format())
-                            messageManager.sendMessageFromConfig(onlineTarget, "pay.receive", targetPlaceholders, config = configManager)
+                            messageManager.sendMessageFromConfig(onlineTarget, "pay.receive", targetPlaceholders, config = messagesConfigManager)
                         } else if (RedisManager.isEnabled) {
                             RedisManager.getPublisher()?.publishPaymentNotification(
                                 offlinePlayer.uniqueId,
@@ -109,12 +119,12 @@ class PayCommand {
                         }
                     }
 
-                    SoundManager.getInstance().playTeleportSound(sender, configManager)
+                    SoundManager.getInstance().playTeleportSound(sender, messagesConfigManager)
                 }
             } else {
                 foliaLib.scheduler.run {
-                    messageManager.sendMessageFromConfig(sender, "pay.insufficient-funds", config = configManager)
-                    SoundManager.getInstance().playErrorSound(sender, configManager)
+                    messageManager.sendMessageFromConfig(sender, "pay.insufficient-funds", config = messagesConfigManager)
+                    SoundManager.getInstance().playErrorSound(sender, messagesConfigManager)
                 }
             }
         }

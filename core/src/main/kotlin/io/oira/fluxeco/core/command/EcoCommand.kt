@@ -30,7 +30,7 @@ class EcoCommand {
     private val configManager = ConfigManager(plugin, "messages.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
-    private fun sendCrossServerMessage(
+    private fun sendMessage(
         targetPlayer: OfflinePlayer,
         messageKey: String,
         placeholders: Placeholders
@@ -77,9 +77,9 @@ class EcoCommand {
                             .add("balance", newBalance.format())
 
                         messageManager.sendMessageFromConfig(actor, "economy.give-success", placeholders, config = configManager)
-                        offlinePlayer.player?.let { onlinePlayer ->
-                            messageManager.sendMessageFromConfig(onlinePlayer, "economy.receive-money", placeholders, config = configManager)
-                        }
+
+                        sendMessage(offlinePlayer, "economy.receive-money", placeholders)
+
                         SoundManager.getInstance().playTeleportSound(actor, configManager)
                     }
                 }
@@ -158,9 +158,9 @@ class EcoCommand {
                         .add("balance", newBalance.format())
 
                     messageManager.sendMessageFromConfig(actor, "economy.take-success", placeholders, config = configManager)
-                    offlinePlayer.player?.let { onlinePlayer ->
-                        messageManager.sendMessageFromConfig(onlinePlayer, "economy.money-taken", placeholders, config = configManager)
-                    }
+
+                    sendMessage(offlinePlayer, "economy.money-taken", placeholders)
+
                     SoundManager.getInstance().playTeleportSound(actor, configManager)
                 } else {
                     messageManager.sendMessageFromConfig(actor, "economy.insufficient-funds", Placeholders().add("player", target.getName()), config = configManager)
@@ -247,9 +247,9 @@ class EcoCommand {
                     .add("balance", parsedAmount.format())
 
                 messageManager.sendMessageFromConfig(actor, "economy.set-success", placeholders, config = configManager)
-                offlinePlayer.player?.let { onlinePlayer ->
-                    messageManager.sendMessageFromConfig(onlinePlayer, "economy.balance-set", placeholders, config = configManager)
-                }
+
+                sendMessage(offlinePlayer, "economy.balance-set", placeholders)
+
                 SoundManager.getInstance().playTeleportSound(actor, configManager)
             }
         }
@@ -315,7 +315,7 @@ class EcoCommand {
 
                 messageManager.sendMessageFromConfig(actor, "economy.reset-success", placeholders, config = configManager)
 
-                sendCrossServerMessage(offlinePlayer, "economy.balance-reset", placeholders)
+                sendMessage(offlinePlayer, "economy.balance-reset", placeholders)
 
                 SoundManager.getInstance().playTeleportSound(actor, configManager)
             }

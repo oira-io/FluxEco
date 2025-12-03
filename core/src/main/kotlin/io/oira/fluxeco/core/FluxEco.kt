@@ -15,6 +15,7 @@ import io.oira.fluxeco.core.command.PayCommand
 import io.oira.fluxeco.core.command.PayToggleCommand
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.gui.impl.BaltopGUI
+import io.oira.fluxeco.core.gui.impl.ConfirmPaymentGUI
 import io.oira.fluxeco.core.gui.impl.HistoryGUI
 import io.oira.fluxeco.core.integration.Metrics
 import io.oira.fluxeco.core.integration.PlaceholderAPI
@@ -22,6 +23,7 @@ import io.oira.fluxeco.core.integration.MiniPlaceholders
 import io.oira.fluxeco.core.integration.Vault
 import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
 import io.oira.fluxeco.core.listener.PlayerJoinListener
+import io.oira.fluxeco.core.listener.PlayerQuitListener
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.EconomyManager
 import io.oira.fluxeco.core.manager.MessageManager
@@ -58,6 +60,10 @@ class FluxEco : JavaPlugin() {
     val historyGui: HistoryGUI
         get() = historyGuiInstance ?: throw IllegalStateException("HistoryGUI not initialized")
 
+    private var confirmPaymentGuiInstance: ConfirmPaymentGUI? = null
+    val confirmPaymentGui: ConfirmPaymentGUI
+        get() = confirmPaymentGuiInstance ?: throw IllegalStateException("ConfirmPaymentGUI not initialized")
+
     val pluginId: Int = 27752
 
     override fun onEnable() {
@@ -71,6 +77,8 @@ class FluxEco : JavaPlugin() {
             Threads.load()
 
             initializeDatabase()
+
+            initializeRedis()
 
             initializeAPI(configManager)
 
@@ -100,6 +108,8 @@ class FluxEco : JavaPlugin() {
             cleanupGUIs()
 
             IFluxEcoAPI.unsetInstance()
+
+            RedisManager.shutdown()
 
             DatabaseManager.shutdown()
 
@@ -153,6 +163,7 @@ class FluxEco : JavaPlugin() {
 
     private fun registerListeners() {
         server.pluginManager.registerEvents(PlayerJoinListener(), this)
+        server.pluginManager.registerEvents(PlayerQuitListener(), this)
     }
 
     private fun registerCommands() {
@@ -206,6 +217,9 @@ class FluxEco : JavaPlugin() {
 
             historyGuiInstance = HistoryGUI()
             server.pluginManager.registerEvents(historyGuiInstance!!, this)
+
+            confirmPaymentGuiInstance = ConfirmPaymentGUI()
+            server.pluginManager.registerEvents(confirmPaymentGuiInstance!!, this)
         } catch (e: Exception) {
             logger.severe("Failed to initialize GUIs: ${e.message}")
             e.printStackTrace()
@@ -216,12 +230,13 @@ class FluxEco : JavaPlugin() {
     private fun cleanupGUIs() {
         try {
             baltopGuiInstance?.closeAll()
-
             baltopGuiInstance?.let { HandlerList.unregisterAll(it) }
 
             historyGuiInstance?.closeAll()
-
             historyGuiInstance?.let { HandlerList.unregisterAll(it) }
+
+            confirmPaymentGuiInstance?.closeAll()
+            confirmPaymentGuiInstance?.let { HandlerList.unregisterAll(it) }
 
             logger.info("Cleaned up GUIs successfully")
         } catch (e: Exception) {

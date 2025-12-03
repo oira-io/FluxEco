@@ -13,10 +13,11 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseManager {
-    private var dataSource: HikariDataSource? = null
-    private var database: Database? = null
+    private lateinit var dataSource: HikariDataSource
+    private lateinit var database: Database
     private val plugin: FluxEco = FluxEco.instance
     private val cfg = ConfigManager(plugin, "database.yml").getConfig()
+    private var initialized: Boolean = false
 
     fun init() {
         val dbType = cfg.getString("database.type", "sqlite")!!.lowercase()
@@ -61,14 +62,16 @@ object DatabaseManager {
 
         try {
             dataSource = HikariDataSource(hikariConfig)
-            database = Database.connect(dataSource!!)
+            database = Database.connect(dataSource)
 
             transaction(database) {
                 SchemaUtils.create(Balances, PlayerProfiles, Transactions, PlayerSettings)
             }
 
+            initialized = true
             plugin.logger.info("Database connection established successfully!")
         } catch (e: Exception) {
+            initialized = false
             plugin.logger.severe("Failed to initialize database: ${e.message}")
             plugin.logger.severe("Please check:")
             plugin.logger.severe("  1. MySQL server is running")
@@ -79,15 +82,28 @@ object DatabaseManager {
         }
     }
 
-    fun getDatabase(): Database = database
-        ?: throw IllegalStateException("Database not initialized")
+    fun getDatabase(): Database {
+        if (!initialized) {
+            throw IllegalStateException("Database not initialized")
+        }
+        return database
+    }
 
     fun shutdown() {
-        dataSource?.let {
-            if (!it.isClosed) {
-                it.close()
+        if (!initialized) {
+            plugin.logger.warning("Database was not initialized, nothing to close")
+            return
+        }
+
+        try {
+            if (!dataSource.isClosed) {
+                dataSource.close()
                 plugin.logger.info("Database connection closed")
             }
-        } ?: plugin.logger.warning("Database was not initialized, nothing to close")
+        } catch (e: Exception) {
+            plugin.logger.warning("Error closing database connection: ${e.message}")
+        } finally {
+            initialized = false
+        }
     }
 }

@@ -50,7 +50,8 @@ class RedisListener(private val jedisPool: JedisPool, private val cache: RedisCa
                         pubSub,
                         RedisChannels.PLAYER_JOIN.channelName,
                         RedisChannels.PLAYER_QUIT.channelName,
-                        RedisChannels.PAYMENT_NOTIFICATION.channelName
+                        RedisChannels.PAYMENT_NOTIFICATION.channelName,
+                        RedisChannels.ECONOMY_NOTIFICATION.channelName
                     )
                 }
             } catch (e: Exception) {
@@ -91,6 +92,7 @@ class RedisListener(private val jedisPool: JedisPool, private val cache: RedisCa
                 RedisChannels.PLAYER_JOIN.channelName -> handlePlayerJoin(message)
                 RedisChannels.PLAYER_QUIT.channelName -> handlePlayerQuit(message)
                 RedisChannels.PAYMENT_NOTIFICATION.channelName -> handlePaymentNotification(message)
+                RedisChannels.ECONOMY_NOTIFICATION.channelName -> handleEconomyNotification(message)
             }
         } catch (e: Exception) {
             plugin.logger.warning("Error handling Redis message on channel $channel: ${e.message}")
@@ -164,6 +166,7 @@ class RedisListener(private val jedisPool: JedisPool, private val cache: RedisCa
                     data.placeholders.forEach { (key, value) ->
                         placeholders.add(key, value)
                     }
+
 
                     messageManager.sendMessageFromConfig(
                         targetPlayer,
