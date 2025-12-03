@@ -1,0 +1,102 @@
+#  ______ _            ______
+# |  ____| |          |  ____|
+# | |__  | |_   ___  _| |__   ___ ___
+# |  __| | | | | \ \/ /  __| / __/ _ \
+# | |    | | |_| |>  <| |___| (_| (_) |
+# |_|    |_|\__,_/_/\_\______\___\___/
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                   ⚙ Baltop GUU Configuration ⚙
+#             Website:        https://oira.io
+#             Documentation:  https://oira.io/docs
+#             Discord:        https://discord.gg/oira
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "{player} ꜱᴛᴀᴛꜱ"
+
+gui-size: 27
+
+items:
+  # These are fully dynamic, you can add or remove as many entries as you want.
+  # Names, lores and messages will support placeholders from PlaceholderAPI,
+  # and MiniPlaceholders. (And our built in placeholders of course)
+
+  money:
+    material: EMERALD
+    name: "&#E53935ᴍᴏɴᴇʏ"
+    lore:
+      - "&7{balance}"
+    slot: 10
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  shards:
+    material: AMETHYST_SHARD
+    name: "&#E53935ꜱʜᴀʀᴅs"
+    lore:
+      - "&7%shards%"
+    slot: 11
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  kills:
+    material: DIAMOND_SWORD
+    name: "&#E53935ᴋɪʟʟs"
+    lore:
+      - "&7%player_kills%"
+    slot: 12
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  deaths:
+    material: SKELETON_SKULL
+    name: "&#E53935ᴅᴇᴀᴛʜs"
+    lore:
+      - "&7%player_deaths%"
+    slot: 13
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  playtime:
+    material: CLOCK
+    name: "&#E53935ᴘʟᴀʏᴛɪᴍᴇ"
+    lore:
+      - "&7%playtime%"
+    slot: 14
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  blocks_placed:
+    material: STONE
+    name: "&#E53935ʙʟᴏᴄᴋs ᴘʟᴀᴄᴇᴅ"
+    lore:
+      - "&7%blocks_placed%"
+    slot: 15
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  blocks_broken:
+    material: COBBLESTONE
+    name: "&#E53935ʙʟᴏᴄᴋs ʙʀᴏᴋᴇɴ"
+    lore:
+      - "&7%blocks_broken%"
+    slot: 16
+    action: "cancel"
+    sound: UI_BUTTON_CLICK
+
+  # This will only render if opened thru the baltop gui.
+  back:
+    material: RED_STAINED_GLASS_PANE
+    name: "&#FF0000ʙᴀᴄᴋ"
+    lore:
+      - "&fClick to return"
+    slot: 18
+    action: "back"
+    sound: UI_BUTTON_CLICK
+
+sounds:
+  enabled: true
+  open: UI_BUTTON_CLICK
+  close: UI_BUTTON_CLICK
+  error: ENTITY_VILLAGER_NO
+
+messages:
+  open: "&aShowing stats for &e{player}"

@@ -109,25 +109,17 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
             val balance = balances.find { it.uuid == uuid }
 
             if (balance != null) {
-                sendEntryClickMessage(player, balance)
+                if (plugin.config.getBoolean("stats.enabled", true) &&
+                    plugin.config.getBoolean("stats.open-clicked-player", true)) {
+                    player.closeInventory()
+                    plugin.statsGui.openForPlayer(player, uuid, true, currentPage)
+                }
             } else {
                 messageManager.sendMessageFromConfig(player, "messages.player-data-not-found", configManager)
             }
         } catch (_: IllegalArgumentException) {
             plugin.logger.warning("Invalid UUID in baltop entry: $playerUuid")
         }
-    }
-
-    private fun sendEntryClickMessage(player: Player, balance: Balance) {
-        val cachedPlayer = getCachedPlayer(balance.uuid)
-        val rank = balances.indexOf(balance) + 1
-
-        val placeholders = Placeholders()
-            .add("player", cachedPlayer.name)
-            .add("balance", balance.balance.format())
-            .add("rank", rank.toString())
-
-        messageManager.sendMessageFromConfig(player, "messages.entry-click", placeholders, configManager)
     }
 
     private fun getRefreshCooldown(): Long {

@@ -1,5 +1,10 @@
 package io.oira.fluxeco.core.util
 
+import io.github.miniplaceholders.api.MiniPlaceholders
+import me.clip.placeholderapi.PlaceholderAPI
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.text.DecimalFormat
 
@@ -7,6 +12,7 @@ import java.text.DecimalFormat
 class Placeholders {
 
     private val placeholders = mutableMapOf<String, String>()
+    private var contextPlayer: Player? = null
 
     companion object {
         fun builder(): Builder = Builder()
@@ -93,11 +99,34 @@ class Placeholders {
         return this
     }
 
+    fun setPlayer(player: Player?): Placeholders {
+        contextPlayer = player
+        return this
+    }
+
     fun replace(text: String): String {
         var result = text
+
         placeholders.forEach { (key, value) ->
             result = result.replace(key, value, ignoreCase = true)
         }
+
+        if (contextPlayer != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            try {
+                result = PlaceholderAPI.setPlaceholders(contextPlayer!!, result)
+            } catch (_: Exception) {}
+        }
+
+        contextPlayer?.let { player ->
+            if (Bukkit.getPluginManager().isPluginEnabled("MiniPlaceholders")) {
+                try {
+                    val audienceResolver = MiniPlaceholders.audiencePlaceholders()
+                    val component = MiniMessage.miniMessage().deserialize(result, player, audienceResolver)
+                    result = LegacyComponentSerializer.legacySection().serialize(component)
+                } catch (_: Exception) {}
+            }
+        }
+
         return result
     }
 

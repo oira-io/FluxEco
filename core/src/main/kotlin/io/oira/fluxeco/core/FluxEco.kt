@@ -13,10 +13,12 @@ import io.oira.fluxeco.core.command.HistoryCommand
 import io.oira.fluxeco.core.command.PayAlertsCommand
 import io.oira.fluxeco.core.command.PayCommand
 import io.oira.fluxeco.core.command.PayToggleCommand
+import io.oira.fluxeco.core.command.StatsCommand
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.gui.impl.BaltopGUI
 import io.oira.fluxeco.core.gui.impl.ConfirmPaymentGUI
 import io.oira.fluxeco.core.gui.impl.HistoryGUI
+import io.oira.fluxeco.core.gui.impl.StatsGUI
 import io.oira.fluxeco.core.integration.Metrics
 import io.oira.fluxeco.core.integration.PlaceholderAPI
 import io.oira.fluxeco.core.integration.MiniPlaceholders
@@ -63,6 +65,10 @@ class FluxEco : JavaPlugin() {
     private var confirmPaymentGuiInstance: ConfirmPaymentGUI? = null
     val confirmPaymentGui: ConfirmPaymentGUI
         get() = confirmPaymentGuiInstance ?: throw IllegalStateException("ConfirmPaymentGUI not initialized")
+
+    private var statsGuiInstance: StatsGUI? = null
+    val statsGui: StatsGUI
+        get() = statsGuiInstance ?: throw IllegalStateException("StatsGUI not initialized")
 
     val pluginId: Int = 27752
 
@@ -204,6 +210,11 @@ class FluxEco : JavaPlugin() {
                 FluxEcoCommand()
             )
 
+            if (config.getBoolean("stats.enabled", true)) {
+                val statsCommandPath = config.getString("stats.command", "stats") ?: "stats"
+                lamp.register(revxrsal.commands.orphan.Orphans.path(statsCommandPath).handler(StatsCommand()))
+            }
+
         } catch (e: Exception) {
             logger.severe("Failed to register commands: ${e.message}")
             e.printStackTrace()
@@ -220,6 +231,11 @@ class FluxEco : JavaPlugin() {
 
             confirmPaymentGuiInstance = ConfirmPaymentGUI()
             server.pluginManager.registerEvents(confirmPaymentGuiInstance!!, this)
+
+            if (config.getBoolean("stats.enabled", true)) {
+                statsGuiInstance = StatsGUI()
+                server.pluginManager.registerEvents(statsGuiInstance!!, this)
+            }
         } catch (e: Exception) {
             logger.severe("Failed to initialize GUIs: ${e.message}")
             e.printStackTrace()
@@ -237,6 +253,9 @@ class FluxEco : JavaPlugin() {
 
             confirmPaymentGuiInstance?.closeAll()
             confirmPaymentGuiInstance?.let { HandlerList.unregisterAll(it) }
+
+            statsGuiInstance?.closeAll()
+            statsGuiInstance?.let { HandlerList.unregisterAll(it) }
 
             logger.info("Cleaned up GUIs successfully")
         } catch (e: Exception) {

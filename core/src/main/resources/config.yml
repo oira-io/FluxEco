@@ -19,7 +19,14 @@ general:
   # How should dates be formatted
   date-format: "dd/MM/yyyy HH:mm"
   # How should transaction IDs be generated
+  # NOTE: This should NOT be changed after data has been created, as it may break references
   id-format: sequential # "random" or "sequential"
+  # Random format settings (only used if id-format is "random")
+  random-format:
+    length: 10  # Length of the random ID
+    use-uppercase: true  # Whether to include uppercase letters
+    use-lowercase: true  # Whether to include lowercase letters
+    use-numbers: true  # Whether to include numbers
   # Whether to allow offline payments
   allow-offline-payments: true
   # Whether to enable the confirm gui for payments
@@ -31,6 +38,14 @@ currency:
   name: "Dollar"
   # Plural name of the currency
   name-plural: "Dollars"
+
+stats:
+  # Enable or disable the /stats command & gui
+  enabled: true
+  # What should the command for stats be
+  command: "stats"
+  # Open Stats GUI of clicked player in baltop gui?
+  open-clicked-player: true
 
 format:
   mode: abbreviated # "commas" or "abbreviated"
@@ -46,21 +61,21 @@ format:
   override-abbreviations: false
   suffixes:
     - ""
-    - K
-    - M
-    - B
-    - T
-    - Qa
-    - Qt
-    - Sx
-    - Sp
-    - Oc
-    - No
-    - De
-    - Ud
-    - Dd
-    - Td
-    - Qd
+    - "K"
+    - "M"
+    - "B"
+    - "T"
+    - "Qa"
+    - "Qt"
+    - "Sx"
+    - "Sp"
+    - "Oc"
+    - "No"
+    - "De"
+    - "Ud"
+    - "Dd"
+    - "Td"
+    - "Qd"
 
 advanced:
   # Maximum number of concurrent async operations (pool size)

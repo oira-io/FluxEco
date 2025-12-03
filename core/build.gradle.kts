@@ -1,9 +1,13 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("com.gradleup.shadow") version "9.2.2"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
+    id("de.eldoria.plugin-yml.paper") version "0.8.0"
 }
 
 group = "io.oira"
@@ -19,10 +23,10 @@ repositories {
 dependencies {
     implementation(project(":api"))
 
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 
-    compileOnly("io.github.revxrsal:lamp.common:4.0.0-rc.13")
+    library("io.github.revxrsal:lamp.common:4.0.0-rc.13")
     compileOnly("io.github.revxrsal:lamp.bukkit:4.0.0-rc.13")
     compileOnly("io.github.revxrsal:lamp.brigadier:4.0.0-rc.13")
 

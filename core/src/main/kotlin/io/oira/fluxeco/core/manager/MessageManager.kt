@@ -155,10 +155,7 @@ class MessageManager private constructor() {
     }
 
     fun sendActionBarFromConfig(player: Player, path: String, placeholders: Placeholders?, config: ConfigManager? = null) {
-        val message = getMessage(path, config) ?: run {
-            plugin.logger.warning("Message not found at path: $path")
-            return
-        }
+        val message = getMessage(path, config) ?: return
         if (message.isEmpty()) return
 
         val actionPrefix = getMessage("prefix-action", config) ?: ""

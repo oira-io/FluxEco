@@ -80,7 +80,6 @@ class PayCommand {
                 return@runAsync
             }
 
-            // Check if confirmation GUI is enabled
             val confirmPayments = mainConfigManager.getConfig().getBoolean("general.confirm-payments", false)
             if (confirmPayments) {
                 foliaLib.scheduler.run {
