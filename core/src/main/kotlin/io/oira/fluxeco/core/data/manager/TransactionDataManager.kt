@@ -4,6 +4,7 @@ import io.oira.fluxeco.FluxEco
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.data.model.Transaction
 import io.oira.fluxeco.core.data.model.TransactionType
+import io.oira.fluxeco.core.data.mongodb.repository.MongoTransactionRepository
 import io.oira.fluxeco.core.data.table.Transactions
 import io.oira.fluxeco.core.util.Threads
 import org.jetbrains.exposed.sql.*
@@ -69,10 +70,13 @@ object TransactionDataManager {
         }
     }
 
-    fun getTransactions(uuid: UUID): List<Transaction> = transaction(DatabaseManager.getDatabase()) {
-        Transactions.selectAll().where { Transactions.playerUuid eq uuid.toString() }
-            .orderBy(Transactions.date, SortOrder.DESC)
-            .map {
+    fun getTransactions(uuid: UUID): List<Transaction> = if (DatabaseManager.isMongoDB()) {
+        MongoTransactionRepository.getTransactions(uuid)
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            Transactions.selectAll().where { Transactions.playerUuid eq uuid.toString() }
+                .orderBy(Transactions.date, SortOrder.DESC)
+                .map {
                 Transaction(
                     id = it[Transactions.id],
                     playerUuid = UUID.fromString(it[Transactions.playerUuid]),
@@ -83,6 +87,7 @@ object TransactionDataManager {
                     date = it[Transactions.date]
                 )
             }
+        }
     }
 
     fun getTransactionsAsync(uuid: UUID): CompletableFuture<List<Transaction>> {
@@ -101,16 +106,20 @@ object TransactionDataManager {
     fun createTransaction(playerUuid: UUID, type: TransactionType, amount: Double, senderUuid: UUID, receiverUuid: UUID): Int {
         val transactionId = generateTransactionId()
 
-        return transaction(DatabaseManager.getDatabase()) {
-            Transactions.insert {
-                it[id] = transactionId
-                it[Transactions.playerUuid] = playerUuid.toString()
-                it[Transactions.type] = type.name
-                it[Transactions.amount] = amount
-                it[Transactions.senderUuid] = senderUuid.toString()
-                it[Transactions.receiverUuid] = receiverUuid.toString()
-                it[Transactions.date] = System.currentTimeMillis()
-            } get Transactions.id
+        return if (DatabaseManager.isMongoDB()) {
+            MongoTransactionRepository.createTransaction(transactionId, playerUuid, type, amount, senderUuid, receiverUuid)
+        } else {
+            transaction(DatabaseManager.getDatabase()) {
+                Transactions.insert {
+                    it[id] = transactionId
+                    it[Transactions.playerUuid] = playerUuid.toString()
+                    it[Transactions.type] = type.name
+                    it[Transactions.amount] = amount
+                    it[Transactions.senderUuid] = senderUuid.toString()
+                    it[Transactions.receiverUuid] = receiverUuid.toString()
+                    it[Transactions.date] = System.currentTimeMillis()
+                } get Transactions.id
+            }
         }
     }
 
@@ -127,11 +136,23 @@ object TransactionDataManager {
         return future
     }
 
-    fun deleteTransactions(uuid: UUID): Int = transaction(DatabaseManager.getDatabase()) {
-        Transactions.deleteWhere { Transactions.playerUuid eq uuid.toString() }
+    fun deleteTransactions(uuid: UUID): Int = if (DatabaseManager.isMongoDB()) {
+        MongoTransactionRepository.getTransactions(uuid).size.also {
+            MongoTransactionRepository.getTransactions(uuid).forEach { transaction ->
+                MongoTransactionRepository.deleteTransaction(transaction.id)
+            }
+        }
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            Transactions.deleteWhere { Transactions.playerUuid eq uuid.toString() }
+        }
     }
 
-    fun deleteAllTransactions(): Int = transaction(DatabaseManager.getDatabase()) {
-        Transactions.deleteAll()
+    fun deleteAllTransactions(): Int = if (DatabaseManager.isMongoDB()) {
+        MongoTransactionRepository.deleteAllTransactions()
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            Transactions.deleteAll()
+        }
     }
 }

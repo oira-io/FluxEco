@@ -29,7 +29,7 @@ To build the plugin yourself:
 ## TODO
 
 - [x] Add Redis cross server support
-- [ ] Add MongoDB support
+- [x] Add MongoDB support (untested)
 - [x] Implement Stats GUI (optional)
 - [x] Implement Confirm GUI (optional)
 - [x] Make more configurable

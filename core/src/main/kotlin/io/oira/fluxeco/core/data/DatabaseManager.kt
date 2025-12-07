@@ -3,6 +3,7 @@ package io.oira.fluxeco.core.data
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.data.mongodb.MongoDBManager
 import io.oira.fluxeco.core.data.table.Balances
 import io.oira.fluxeco.core.data.table.PlayerProfiles
 import io.oira.fluxeco.core.data.table.PlayerSettings
@@ -18,9 +19,27 @@ object DatabaseManager {
     private val plugin: FluxEco = FluxEco.instance
     private val cfg = ConfigManager(plugin, "database.yml").getConfig()
     private var initialized: Boolean = false
+    private var dbType: String = "sqlite"
+    private var isMongoDb: Boolean = false
 
     fun init() {
-        val dbType = cfg.getString("database.type", "sqlite")!!.lowercase()
+        dbType = cfg.getString("database.type", "sqlite")!!.lowercase()
+
+        if (dbType == "mongodb") {
+            isMongoDb = true
+            try {
+                MongoDBManager.init()
+                initialized = true
+                plugin.logger.info("MongoDB initialized successfully!")
+            } catch (e: Exception) {
+                initialized = false
+                plugin.logger.severe("Failed to initialize MongoDB: ${e.message}")
+                throw e
+            }
+            return
+        }
+
+        isMongoDb = false
         val mysqlUri = cfg.getString("database.mysql.uri")?.takeIf { it.isNotBlank() }
 
         val jdbcUrl = when {
@@ -49,8 +68,8 @@ object DatabaseManager {
             }
             maximumPoolSize = cfg.getInt("database.mysql.poolSize", 10)
             isAutoCommit = false
-            connectionTimeout = 30000 // 30 seconds
-            validationTimeout = 5000 // 5 seconds
+            connectionTimeout = 30000
+            validationTimeout = 5000
 
             driverClassName = when (dbType) {
                 "sqlite" -> "org.sqlite.JDBC"
@@ -73,11 +92,6 @@ object DatabaseManager {
         } catch (e: Exception) {
             initialized = false
             plugin.logger.severe("Failed to initialize database: ${e.message}")
-            plugin.logger.severe("Please check:")
-            plugin.logger.severe("  1. MySQL server is running")
-            plugin.logger.severe("  2. Database '${cfg.getString("database.mysql.database", "fluxeco")}' exists")
-            plugin.logger.severe("  3. Credentials in database.yml are correct")
-            plugin.logger.severe("  4. MySQL is accessible on ${cfg.getString("database.mysql.host", "localhost")}:${cfg.getInt("database.mysql.port", 3306)}")
             throw e
         }
     }
@@ -86,8 +100,15 @@ object DatabaseManager {
         if (!initialized) {
             throw IllegalStateException("Database not initialized")
         }
+        if (isMongoDb) {
+            throw IllegalStateException("Cannot get SQL Database when MongoDB is configured. Use MongoDBManager instead.")
+        }
         return database
     }
+
+    fun isMongoDB(): Boolean = isMongoDb
+
+    fun getDatabaseType(): String = dbType
 
     fun shutdown() {
         if (!initialized) {
@@ -96,7 +117,9 @@ object DatabaseManager {
         }
 
         try {
-            if (!dataSource.isClosed) {
+            if (isMongoDb) {
+                MongoDBManager.shutdown()
+            } else if (!dataSource.isClosed) {
                 dataSource.close()
                 plugin.logger.info("Database connection closed")
             }
@@ -107,3 +130,4 @@ object DatabaseManager {
         }
     }
 }
+

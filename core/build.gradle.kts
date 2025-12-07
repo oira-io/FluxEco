@@ -29,32 +29,35 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 
-    library("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
-    library("org.jetbrains.kotlinx", "kotlinx-serialization-json", "1.6.0")
+    library("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "2.2.21")
+    library("org.jetbrains.kotlinx", "kotlinx-serialization-json", "1.9.0")
 
-    library("io.github.revxrsal", "lamp.common", "4.0.0-rc.13")
-    library("io.github.revxrsal", "lamp.bukkit", "4.0.0-rc.13")
-    library("io.github.revxrsal", "lamp.brigadier", "4.0.0-rc.13")
+    library("io.github.revxrsal", "lamp.common", "4.0.0-rc.14")
+    library("io.github.revxrsal", "lamp.bukkit", "4.0.0-rc.14")
+    library("io.github.revxrsal", "lamp.brigadier", "4.0.0-rc.14")
 
     library("com.zaxxer", "HikariCP", "7.0.2")
-    library("org.jetbrains.exposed", "exposed-core", "0.61.0")
-    library("org.jetbrains.exposed", "exposed-dao", "0.61.0")
-    library("org.jetbrains.exposed", "exposed-jdbc", "0.61.0")
-    library("org.jetbrains.exposed", "exposed-java-time", "0.61.0")
-    library("org.jetbrains.exposed", "exposed-kotlin-datetime", "0.61.0")
+    library("org.jetbrains.exposed", "exposed-core", "1.0.0")
+    library("org.jetbrains.exposed", "exposed-dao", "1.0.0")
+    library("org.jetbrains.exposed", "exposed-jdbc", "1.0.0")
+    library("org.jetbrains.exposed", "exposed-java-time", "1.0.0")
+    library("org.jetbrains.exposed", "exposed-kotlin-datetime", "1.0.0")
 
-    library("org.xerial", "sqlite-jdbc", "3.50.3.0")
-    library("com.mysql", "mysql-connector-j", "9.4.0")
+    library("org.xerial", "sqlite-jdbc", "3.51.0.0")
+    library("com.mysql", "mysql-connector-j", "9.5.0")
     library("com.h2database", "h2", "2.4.240")
 
+    library("org.mongodb", "mongodb-driver-kotlin-coroutine", "5.6.1")
+    library("org.mongodb", "bson-kotlinx", "5.6.1")
+
     library("de.rapha149.signgui", "signgui", "2.5.4")
-    library("com.tcoded", "FoliaLib", "0.5.1")
-    library("redis.clients", "jedis", "5.1.0")
+    library("com.tcoded", "FoliaLib", "0.4.4")
+    library("redis.clients", "jedis", "7.0.0")
 
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("io.github.miniplaceholders:miniplaceholders-api:3.0.1")
-    compileOnly("io.github.miniplaceholders:miniplaceholders-kotlin-ext:3.0.1")
+    compileOnly("io.github.miniplaceholders:miniplaceholders-api:3.1.0")
+    compileOnly("io.github.miniplaceholders:miniplaceholders-kotlin-ext:3.1.0")
 }
 
 bukkit {

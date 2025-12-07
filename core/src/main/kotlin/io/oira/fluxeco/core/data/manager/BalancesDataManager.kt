@@ -4,6 +4,7 @@ import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.data.table.Balances
 import io.oira.fluxeco.core.util.Threads
 import io.oira.fluxeco.core.data.model.Balance
+import io.oira.fluxeco.core.data.mongodb.repository.MongoBalanceRepository
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -85,12 +86,20 @@ object BalancesDataManager {
         return future
     }
 
-    fun deleteBalance(uuid: UUID): Int = transaction(DatabaseManager.getDatabase()) {
-        Balances.deleteWhere { Balances.uuid eq uuid.toString() }
+    fun deleteBalance(uuid: UUID): Int = if (DatabaseManager.isMongoDB()) {
+        MongoBalanceRepository.deleteBalance(uuid)
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            Balances.deleteWhere { Balances.uuid eq uuid.toString() }
+        }
     }
 
-    fun deleteAllBalances(): Int = transaction(DatabaseManager.getDatabase()) {
-        Balances.deleteAll()
+    fun deleteAllBalances(): Int = if (DatabaseManager.isMongoDB()) {
+        MongoBalanceRepository.deleteAllBalances()
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            Balances.deleteAll()
+        }
     }
 
     fun deleteAllBalancesAsync(): CompletableFuture<Int> {

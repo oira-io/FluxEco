@@ -2,6 +2,7 @@ package io.oira.fluxeco.core.data.manager
 
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.data.model.PlayerSetting
+import io.oira.fluxeco.core.data.mongodb.repository.MongoPlayerSettingRepository
 import io.oira.fluxeco.core.data.table.PlayerSettings
 import io.oira.fluxeco.core.util.Threads
 import org.jetbrains.exposed.sql.*
@@ -11,16 +12,20 @@ import java.util.concurrent.CompletableFuture
 
 object SettingsDataManager {
 
-    fun getSetting(uuid: UUID): PlayerSetting? = transaction(DatabaseManager.getDatabase()) {
-        PlayerSettings.selectAll().where { PlayerSettings.uuid eq uuid.toString() }
-            .map {
-                PlayerSetting(
-                    uuid = UUID.fromString(it[PlayerSettings.uuid]),
-                    togglePayments = it[PlayerSettings.togglePayments],
-                    payAlerts = it[PlayerSettings.payAlerts]
-                )
-            }
-            .singleOrNull()
+    fun getSetting(uuid: UUID): PlayerSetting? = if (DatabaseManager.isMongoDB()) {
+        MongoPlayerSettingRepository.getSetting(uuid)
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            PlayerSettings.selectAll().where { PlayerSettings.uuid eq uuid.toString() }
+                .map {
+                    PlayerSetting(
+                        uuid = UUID.fromString(it[PlayerSettings.uuid]),
+                        togglePayments = it[PlayerSettings.togglePayments],
+                        payAlerts = it[PlayerSettings.payAlerts]
+                    )
+                }
+                .singleOrNull()
+        }
     }
 
     fun getSettingAsync(uuid: UUID): CompletableFuture<PlayerSetting?> {
@@ -76,14 +81,18 @@ object SettingsDataManager {
         return future
     }
 
-    fun setPayAlerts(uuid: UUID, payAlerts: Boolean): Int = transaction(DatabaseManager.getDatabase()) {
-        val current = getSetting(uuid)
-        PlayerSettings.replace {
-            it[PlayerSettings.uuid] = uuid.toString()
-            it[PlayerSettings.togglePayments] = current?.togglePayments ?: true
-            it[PlayerSettings.payAlerts] = payAlerts
+    fun setPayAlerts(uuid: UUID, payAlerts: Boolean): Int = if (DatabaseManager.isMongoDB()) {
+        MongoPlayerSettingRepository.setPayAlerts(uuid, payAlerts)
+    } else {
+        transaction(DatabaseManager.getDatabase()) {
+            val current = getSetting(uuid)
+            PlayerSettings.replace {
+                it[PlayerSettings.uuid] = uuid.toString()
+                it[PlayerSettings.togglePayments] = current?.togglePayments ?: true
+                it[PlayerSettings.payAlerts] = payAlerts
+            }
+            1
         }
-        1
     }
 
     fun setPayAlertsAsync(uuid: UUID, payAlerts: Boolean): CompletableFuture<Int> {
