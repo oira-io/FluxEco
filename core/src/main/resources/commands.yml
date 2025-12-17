@@ -1,0 +1,66 @@
+#  ______ _            ______
+# |  ____| |          |  ____|
+# | |__  | |_   ___  _| |__   ___ ___
+# |  __| | | | | \ \/ /  __| / __/ _ \
+# | |    | | |_| |>  <| |___| (_| (_) |
+# |_|    |_|\__,_/_/\_\______\___\___/
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                       ⚙ Main Configuration ⚙
+#             Website:        https://oira.io
+#             Documentation:  https://oira.io/docs
+#             Discord:        https://discord.gg/oira
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+commands:
+  pay:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.pay
+    aliases:
+      - pay
+  economy:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.eco
+    aliases:
+      - eco
+      - economy
+  balance:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.balance
+    aliases:
+      - balance
+      - bal
+      - money
+  balance-top:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.baltop
+    aliases:
+      - baltop
+  transaction-history:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.history
+    aliases:
+      - history
+      - transactions
+  pay-alerts:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.payalerts
+    aliases:
+      - payalerts
+  pay-toggle:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.paytoggle
+    aliases:
+      - paytoggle
+  stats:
+    enabled: true
+    cooldown: 0
+    permission: fluxeco.command.stats
+    aliases:
+      - stats

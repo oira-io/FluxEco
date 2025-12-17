@@ -14,6 +14,7 @@ import io.oira.fluxeco.core.command.PayAlertsCommand
 import io.oira.fluxeco.core.command.PayCommand
 import io.oira.fluxeco.core.command.PayToggleCommand
 import io.oira.fluxeco.core.command.StatsCommand
+import io.oira.fluxeco.core.command.permissions.ConfigPermissionFactory
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.gui.impl.BaltopGUI
 import io.oira.fluxeco.core.gui.impl.ConfirmPaymentGUI
@@ -175,6 +176,7 @@ class FluxEco : JavaPlugin() {
     private fun registerCommands() {
         try {
             val lamp = BukkitLamp.builder(this)
+                .permissionFactory(ConfigPermissionFactory(this))
                 .parameterTypes { types ->
                     types.addParameterType(AsyncOfflinePlayer::class.java, AsyncOfflinePlayer.parameterType())
                 }

@@ -40,10 +40,6 @@ currency:
   name-plural: "Dollars"
 
 stats:
-  # Enable or disable the /stats command & gui
-  enabled: true
-  # What should the command for stats be
-  command: "stats"
   # Open Stats GUI of clicked player in baltop gui?
   open-clicked-player: true
 
