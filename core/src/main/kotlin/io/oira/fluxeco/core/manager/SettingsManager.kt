@@ -1,9 +1,9 @@
 package io.oira.fluxeco.core.manager
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.data.manager.SettingsDataManager
 import io.oira.fluxeco.core.util.Threads
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 object SettingsManager {

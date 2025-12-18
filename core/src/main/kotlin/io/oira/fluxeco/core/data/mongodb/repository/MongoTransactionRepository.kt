@@ -1,7 +1,6 @@
 package io.oira.fluxeco.core.data.mongodb.repository
 
 import com.mongodb.client.model.Filters
-import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.Sorts
 import io.oira.fluxeco.core.data.model.Transaction
 import io.oira.fluxeco.core.data.model.TransactionType
@@ -9,7 +8,7 @@ import io.oira.fluxeco.core.data.mongodb.MongoDBManager
 import io.oira.fluxeco.core.data.mongodb.document.TransactionDocument
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import java.util.UUID
+import java.util.*
 
 object MongoTransactionRepository {
     private fun getCollection() = MongoDBManager.getTransactionsCollection()

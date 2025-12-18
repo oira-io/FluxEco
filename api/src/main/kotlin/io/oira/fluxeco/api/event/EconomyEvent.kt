@@ -2,7 +2,6 @@ package io.oira.fluxeco.api.event
 
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
-import java.util.UUID
 
 abstract class EconomyEvent : Event() {
     companion object {

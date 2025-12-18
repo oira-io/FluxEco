@@ -1,14 +1,7 @@
 package io.oira.fluxeco.core.manager
 
-import io.oira.fluxeco.FluxEco
-import io.oira.fluxeco.core.command.BalanceCommand
-import io.oira.fluxeco.core.command.BaltopCommand
-import io.oira.fluxeco.core.command.EcoCommand
-import io.oira.fluxeco.core.command.HistoryCommand
-import io.oira.fluxeco.core.command.PayAlertsCommand
-import io.oira.fluxeco.core.command.PayCommand
-import io.oira.fluxeco.core.command.PayToggleCommand
-import io.oira.fluxeco.core.command.StatsCommand
+import io.oira.fluxeco.core.FluxEco
+import io.oira.fluxeco.core.command.*
 import io.oira.fluxeco.core.command.permissions.ConfigPermissionFactory
 import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
 import io.oira.fluxeco.core.redis.RedisManager
@@ -16,7 +9,6 @@ import org.bukkit.Bukkit
 import revxrsal.commands.bukkit.BukkitLamp
 import revxrsal.commands.orphan.OrphanCommand
 import revxrsal.commands.orphan.Orphans
-import kotlin.jvm.java
 import kotlin.reflect.KClass
 
 object CommandManager {

@@ -1,7 +1,6 @@
 package io.oira.fluxeco.core.manager
 
-import io.oira.fluxeco.FluxEco
-import io.oira.fluxeco.core.manager.ConfigManager
+import io.oira.fluxeco.core.FluxEco
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player

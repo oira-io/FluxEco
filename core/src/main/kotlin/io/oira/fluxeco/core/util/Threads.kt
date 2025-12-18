@@ -1,11 +1,9 @@
 package io.oira.fluxeco.core.util
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.manager.ConfigManager
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
+import org.bukkit.Bukkit
+import java.util.concurrent.*
 
 object Threads {
 
@@ -19,10 +17,9 @@ object Threads {
     private var shutdown = false
 
     fun load() {
-
         val threads = maxOf(2, cfg.getString("advanced.max-pool-size")?.toIntOrNull() ?: 6)
         executor = Executors.newFixedThreadPool(threads)
-        scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
+        scheduledExecutor = Executors.newScheduledThreadPool(2)
 
         plugin.logger.info("FluxEco executor started with $threads threads.")
     }
@@ -32,9 +29,33 @@ object Threads {
         executor.execute(runnable)
     }
 
+    fun runSync(runnable: Runnable) {
+        if (shutdown) return
+        if (Bukkit.isPrimaryThread()) {
+            runnable.run()
+        } else {
+            plugin.foliaLib.scheduler.runNextTick { runnable.run() }
+        }
+    }
+
     fun <T> getAsync(runnable: () -> T): T? {
         if (shutdown || !::executor.isInitialized) return null
         return CompletableFuture.supplyAsync(runnable, executor).join()
+    }
+
+    fun scheduleAtFixedRate(
+        initialDelay: Long,
+        period: Long,
+        unit: TimeUnit,
+        task: Runnable
+    ): ScheduledFuture<*>? {
+        if (shutdown || !::scheduledExecutor.isInitialized) return null
+        return scheduledExecutor.scheduleAtFixedRate(task, initialDelay, period, unit)
+    }
+
+    fun schedule(delay: Long, unit: TimeUnit, task: Runnable): ScheduledFuture<*>? {
+        if (shutdown || !::scheduledExecutor.isInitialized) return null
+        return scheduledExecutor.schedule(task, delay, unit)
     }
 
     fun close() {

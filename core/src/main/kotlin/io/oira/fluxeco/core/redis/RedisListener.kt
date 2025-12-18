@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.redis
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.MessageManager
 import io.oira.fluxeco.core.manager.SettingsManager
@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPubSub
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class RedisListener(private val jedisPool: JedisPool, private val cache: RedisCache) {

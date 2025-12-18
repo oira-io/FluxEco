@@ -54,8 +54,8 @@ dependencies {
     library("org.mongodb", "mongodb-driver-kotlin-coroutine", "5.6.1")
     library("org.mongodb", "bson-kotlinx", "5.6.1")
 
-    library("de.rapha149.signgui", "signgui", "2.5.4")
-    library("com.tcoded", "FoliaLib", "0.5.1")
+    implementation("de.rapha149.signgui", "signgui", "2.5.4")
+    implementation("com.tcoded", "FoliaLib", "0.5.1")
     library("redis.clients", "jedis", "7.0.0")
 
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
@@ -65,7 +65,8 @@ dependencies {
 }
 
 bukkit {
-    main = "io.oira.fluxeco.FluxEco"
+    name = "FluxEco"
+    main = "io.oira.fluxeco.core.FluxEco"
 
     authors = listOf("Harfull")
     description = "A modern, optimized, and lightweight economy plugin."

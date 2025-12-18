@@ -7,7 +7,7 @@ import io.oira.fluxeco.core.data.mongodb.MongoDBManager
 import io.oira.fluxeco.core.data.mongodb.document.PlayerSettingDocument
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
-import java.util.UUID
+import java.util.*
 
 object MongoPlayerSettingRepository {
     private fun getCollection() = MongoDBManager.getPlayerSettingsCollection()

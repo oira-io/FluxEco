@@ -4,9 +4,10 @@ import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.data.model.PlayerProfile
 import io.oira.fluxeco.core.data.mongodb.repository.MongoPlayerProfileRepository
 import io.oira.fluxeco.core.data.table.PlayerProfiles
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.replace
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
+import java.util.*
 
 object PlayerProfileManager {
 

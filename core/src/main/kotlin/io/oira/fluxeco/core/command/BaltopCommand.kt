@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.command
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.command.permissions.ConfigPermission
 import org.bukkit.entity.Player
 import revxrsal.commands.annotation.CommandPlaceholder

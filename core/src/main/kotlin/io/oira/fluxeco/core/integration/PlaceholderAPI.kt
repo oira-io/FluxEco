@@ -1,8 +1,7 @@
 package io.oira.fluxeco.core.integration
 
-import io.oira.fluxeco.core.manager.EconomyManager
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.manager.SettingsManager
-import io.oira.fluxeco.core.util.NumberFormatter
 import io.oira.fluxeco.core.util.format
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
@@ -29,8 +28,8 @@ class PlaceholderAPI : PlaceholderExpansion() {
     override fun onRequest(player: OfflinePlayer?, @NotNull params: String): String? {
         if (player == null) return null
         return when (params.lowercase()) {
-            "balance" -> EconomyManager.getBalance(player.uniqueId).toString()
-            "balance_formatted" -> EconomyManager.getBalance(player.uniqueId).format()
+            "balance" -> CacheManager.getBalance(player.uniqueId).toString()
+            "balance_formatted" -> CacheManager.getBalance(player.uniqueId).format()
             "toggle_payments" -> if (SettingsManager.getTogglePayments(player.uniqueId)) "enabled" else "disabled"
             "pay_alerts" -> if (SettingsManager.getPayAlerts(player.uniqueId)) "enabled" else "disabled"
             else -> null
@@ -40,8 +39,8 @@ class PlaceholderAPI : PlaceholderExpansion() {
     override fun onPlaceholderRequest(player: Player?, @NotNull params: String): String? {
         if (player == null) return null
         return when (params.lowercase()) {
-            "balance" -> EconomyManager.getBalance(player.uniqueId).toString()
-            "balance_formatted" -> EconomyManager.getBalance(player.uniqueId).format()
+            "balance" -> CacheManager.getBalance(player.uniqueId).toString()
+            "balance_formatted" -> CacheManager.getBalance(player.uniqueId).format()
             "toggle_payments" -> if (SettingsManager.getTogglePayments(player.uniqueId)) "enabled" else "disabled"
             "pay_alerts" -> if (SettingsManager.getPayAlerts(player.uniqueId)) "enabled" else "disabled"
             else -> null

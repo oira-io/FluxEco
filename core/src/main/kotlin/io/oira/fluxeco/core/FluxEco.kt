@@ -1,30 +1,20 @@
-package io.oira.fluxeco
+package io.oira.fluxeco.core
 
 import com.tcoded.folialib.FoliaLib
 import io.oira.fluxeco.api.IFluxEcoAPI
 import io.oira.fluxeco.core.api.EconomyManagerImpl
 import io.oira.fluxeco.core.api.FluxEcoAPIImpl
 import io.oira.fluxeco.core.api.TransactionManagerImpl
-import io.oira.fluxeco.core.command.BalanceCommand
-import io.oira.fluxeco.core.command.BaltopCommand
-import io.oira.fluxeco.core.command.EcoCommand
-import io.oira.fluxeco.core.command.FluxEcoCommand
-import io.oira.fluxeco.core.command.HistoryCommand
-import io.oira.fluxeco.core.command.PayAlertsCommand
-import io.oira.fluxeco.core.command.PayCommand
-import io.oira.fluxeco.core.command.PayToggleCommand
-import io.oira.fluxeco.core.command.StatsCommand
-import io.oira.fluxeco.core.command.permissions.ConfigPermissionFactory
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.gui.impl.BaltopGUI
 import io.oira.fluxeco.core.gui.impl.ConfirmPaymentGUI
 import io.oira.fluxeco.core.gui.impl.HistoryGUI
 import io.oira.fluxeco.core.gui.impl.StatsGUI
 import io.oira.fluxeco.core.integration.Metrics
-import io.oira.fluxeco.core.integration.PlaceholderAPI
 import io.oira.fluxeco.core.integration.MiniPlaceholders
+import io.oira.fluxeco.core.integration.PlaceholderAPI
 import io.oira.fluxeco.core.integration.Vault
-import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
 import io.oira.fluxeco.core.listener.PlayerJoinListener
 import io.oira.fluxeco.core.listener.PlayerQuitListener
 import io.oira.fluxeco.core.manager.CommandManager
@@ -41,7 +31,6 @@ import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-import revxrsal.commands.bukkit.BukkitLamp
 
 class FluxEco : JavaPlugin() {
 
@@ -88,6 +77,8 @@ class FluxEco : JavaPlugin() {
 
             initializeRedis()
 
+            initializeCache()
+
             initializeAPI(configManager)
 
             Metrics(this, pluginId)
@@ -118,6 +109,8 @@ class FluxEco : JavaPlugin() {
 
             IFluxEcoAPI.unsetInstance()
 
+            CacheManager.shutdown()
+
             RedisManager.shutdown()
 
             DatabaseManager.shutdown()
@@ -146,6 +139,15 @@ class FluxEco : JavaPlugin() {
             RedisManager.init()
         } catch (e: Exception) {
             logger.warning("Failed to initialize Redis: ${e.message}")
+        }
+    }
+
+    private fun initializeCache() {
+        try {
+            CacheManager.init()
+            logger.info("Cache system initialized successfully!")
+        } catch (e: Exception) {
+            logger.warning("Failed to initialize cache: ${e.message}")
         }
     }
 

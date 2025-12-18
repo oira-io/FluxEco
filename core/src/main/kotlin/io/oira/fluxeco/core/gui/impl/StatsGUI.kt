@@ -1,8 +1,8 @@
 package io.oira.fluxeco.core.gui.impl
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.gui.BaseGUI
-import io.oira.fluxeco.core.manager.EconomyManager
 import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.format
 import org.bukkit.Bukkit
@@ -81,7 +81,7 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
 
     private fun createPlayerPlaceholders(player: Player?): Placeholders {
         val uuid = targetPlayerUuid ?: return Placeholders()
-        val balance = EconomyManager.getBalance(uuid)
+        val balance = CacheManager.getBalance(uuid)
 
         return Placeholders()
             .add("balance", balance.format())

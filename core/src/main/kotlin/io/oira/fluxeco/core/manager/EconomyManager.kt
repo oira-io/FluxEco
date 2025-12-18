@@ -1,10 +1,11 @@
 package io.oira.fluxeco.core.manager
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.data.manager.BalancesDataManager
 import io.oira.fluxeco.core.data.model.Balance
 import io.oira.fluxeco.core.util.Threads
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 object EconomyManager {
@@ -34,7 +35,9 @@ object EconomyManager {
     }
 
     fun setBalance(uuid: UUID, amount: Double): Int {
-        return BalancesDataManager.updateBalance(uuid, amount)
+        val result = BalancesDataManager.updateBalance(uuid, amount)
+        CacheManager.updateBalance(uuid, amount)
+        return result
     }
 
     fun setBalanceAsync(uuid: UUID, amount: Double): CompletableFuture<Int> {

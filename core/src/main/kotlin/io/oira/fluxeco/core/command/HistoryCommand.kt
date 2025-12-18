@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.command
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.command.permissions.ConfigPermission
 import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
 import io.oira.fluxeco.core.util.Threads

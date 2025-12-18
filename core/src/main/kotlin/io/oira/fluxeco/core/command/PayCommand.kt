@@ -1,23 +1,18 @@
 package io.oira.fluxeco.core.command
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.command.permissions.ConfigPermission
-import io.oira.fluxeco.core.manager.EconomyManager
-import io.oira.fluxeco.core.manager.ConfigManager
-import io.oira.fluxeco.core.manager.MessageManager
-import io.oira.fluxeco.core.manager.SoundManager
-import io.oira.fluxeco.core.manager.TransactionManager
-import io.oira.fluxeco.core.manager.SettingsManager
+import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
+import io.oira.fluxeco.core.manager.*
+import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.Placeholders
+import io.oira.fluxeco.core.util.Threads
 import io.oira.fluxeco.core.util.format
 import io.oira.fluxeco.core.util.parseNum
-import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
-import io.oira.fluxeco.core.redis.RedisManager
 import org.bukkit.entity.Player
+import revxrsal.commands.annotation.CommandPlaceholder
 import revxrsal.commands.annotation.Description
 import revxrsal.commands.annotation.Named
-import io.oira.fluxeco.core.util.Threads
-import revxrsal.commands.annotation.CommandPlaceholder
 import revxrsal.commands.orphan.OrphanCommand
 
 class PayCommand : OrphanCommand {

@@ -2,7 +2,7 @@ package io.oira.fluxeco.core.data
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.data.mongodb.MongoDBManager
 import io.oira.fluxeco.core.data.table.Balances
 import io.oira.fluxeco.core.data.table.PlayerProfiles

@@ -9,7 +9,7 @@ import io.oira.fluxeco.core.manager.EconomyManager
 import io.oira.fluxeco.core.util.NumberFormatter
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class EconomyManagerImpl(
