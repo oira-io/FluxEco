@@ -40,7 +40,7 @@ items:
     lore:
       - "&fMoney: &f${balance} &#E53935(#{user-rank})"
     slot: 48
-    action: "player"
+    action: "stats" # Opens player stats GUI, change to "none" to disable
     sound: UI_BUTTON_CLICK
 
   refresh:
@@ -79,10 +79,8 @@ sounds:
 
 messages:
   open: "&aShowing top players by balance. Total: &e{total}"
-  entry-click: "&a{player} &7- Rank: &e#{rank} &7- Balance: &a{balance}"
   previous-page-error: "&cYou are already on the first page!"
   next-page-error: "&cYou are already on the last page!"
   refresh-cooldown: "&cPlease wait {remaining} seconds before refreshing again."
   refresh-success: "&aBalances refreshed!"
-  search-not-implemented: "&cSearch feature not implemented yet."
   player-data-not-found: "&cPlayer data not found."

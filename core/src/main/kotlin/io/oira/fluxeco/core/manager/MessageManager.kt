@@ -1,16 +1,15 @@
 package io.oira.fluxeco.core.manager
 
+import io.oira.fluxeco.core.FluxEco
+import io.oira.fluxeco.core.util.Placeholders
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.title.Title
-import io.oira.fluxeco.FluxEco
-import io.oira.fluxeco.core.util.Placeholders
-import io.oira.fluxeco.core.manager.ConfigManager
 import org.bukkit.Bukkit
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.command.CommandSender
+import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import java.time.Duration

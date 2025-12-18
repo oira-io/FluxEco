@@ -1,12 +1,9 @@
 package io.oira.fluxeco.core.command
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
+import io.oira.fluxeco.core.command.permissions.ConfigPermission
 import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
-import io.oira.fluxeco.core.manager.EconomyManager
-import io.oira.fluxeco.core.manager.ConfigManager
-import io.oira.fluxeco.core.manager.MessageManager
-import io.oira.fluxeco.core.manager.SoundManager
-import io.oira.fluxeco.core.manager.TransactionManager
+import io.oira.fluxeco.core.manager.*
 import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.Threads
@@ -14,16 +11,15 @@ import io.oira.fluxeco.core.util.format
 import io.oira.fluxeco.core.util.parseNum
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
-import revxrsal.commands.annotation.Command
+import revxrsal.commands.annotation.CommandPlaceholder
 import revxrsal.commands.annotation.Description
 import revxrsal.commands.annotation.Named
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
-import revxrsal.commands.bukkit.annotation.CommandPermission
-import java.util.UUID
+import revxrsal.commands.orphan.OrphanCommand
+import java.util.*
 
-@Command("economy", "eco")
-class EcoCommand {
+class EcoCommand : OrphanCommand {
 
     private val plugin: FluxEco = FluxEco.instance
     private val messageManager: MessageManager = MessageManager.getInstance()
@@ -47,9 +43,13 @@ class EcoCommand {
         }
     }
 
+    @CommandPlaceholder
+    @ConfigPermission("commands.economy.permissions.base")
+    fun onCommand() {}
+
     @Subcommand("give")
     @Description("Gives money to a player.")
-    @CommandPermission("fluxeco.command.eco.give")
+    @ConfigPermission("commands.economy.permissions.give")
     fun giveCommand(actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -89,7 +89,7 @@ class EcoCommand {
 
     @Subcommand("give *")
     @Description("Gives money to all online players.")
-    @CommandPermission("fluxeco.command.eco.give")
+    @ConfigPermission("commands.economy.permissions.give-all")
     fun giveCommandAll(actor: BukkitCommandActor, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -128,7 +128,7 @@ class EcoCommand {
 
     @Subcommand("take")
     @Description("Takes money from a player.")
-    @CommandPermission("fluxeco.command.eco.take")
+    @ConfigPermission("commands.economy.permissions.take")
     fun takeCommand(actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -172,7 +172,7 @@ class EcoCommand {
 
     @Subcommand("take *")
     @Description("Takes money from all online players.")
-    @CommandPermission("fluxeco.command.eco.take")
+    @ConfigPermission("commands.economy.permissions.take-all")
     fun takeCommandAll(actor: BukkitCommandActor, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -215,7 +215,7 @@ class EcoCommand {
 
     @Subcommand("set")
     @Description("Sets a player's balance.")
-    @CommandPermission("fluxeco.command.eco.set")
+    @ConfigPermission("commands.economy.permissions.set")
     fun setCommand(actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -257,7 +257,7 @@ class EcoCommand {
 
     @Subcommand("set *")
     @Description("Sets all online players' balance.")
-    @CommandPermission("fluxeco.command.eco.set")
+    @ConfigPermission("commands.economy.permissions.set-all")
     fun setCommandAll(actor: BukkitCommandActor, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -300,7 +300,7 @@ class EcoCommand {
 
     @Subcommand("reset")
     @Description("Resets a player's balance to 0.")
-    @CommandPermission("fluxeco.command.eco.reset")
+    @ConfigPermission("commands.economy.permissions.reset")
     fun resetCommand(actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer) {
         val adminUuid = actor.asPlayer()?.uniqueId ?: UUID(0, 0)
         Threads.runAsync {
@@ -324,7 +324,7 @@ class EcoCommand {
 
     @Subcommand("reset *")
     @Description("Resets all online players' balance to 0.")
-    @CommandPermission("fluxeco.command.eco.reset")
+    @ConfigPermission("commands.economy.permissions.reset-all")
     fun resetCommandAll(actor: BukkitCommandActor) {
         val adminUuid = actor.asPlayer()?.uniqueId ?: UUID(0, 0)
         Threads.runAsync {

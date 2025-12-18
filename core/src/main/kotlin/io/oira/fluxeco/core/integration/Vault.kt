@@ -1,8 +1,8 @@
 package io.oira.fluxeco.core.integration
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.manager.EconomyManager
-import io.oira.fluxeco.core.util.NumberFormatter
 import io.oira.fluxeco.core.util.format
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
@@ -51,7 +51,7 @@ class Vault(private val plugin: FluxEco, private val economyManager: EconomyMana
     }
 
     override fun getBalance(player: OfflinePlayer): Double {
-        return economyManager.getBalance(player.uniqueId)
+        return CacheManager.getBalance(player.uniqueId)
     }
 
     override fun getBalance(player: OfflinePlayer, world: String): Double {
@@ -59,7 +59,7 @@ class Vault(private val plugin: FluxEco, private val economyManager: EconomyMana
     }
 
     override fun has(player: OfflinePlayer, amount: Double): Boolean {
-        return economyManager.hasBalance(player.uniqueId, amount)
+        return CacheManager.getBalance(player.uniqueId) >= amount
     }
 
     override fun has(player: OfflinePlayer, worldName: String, amount: Double): Boolean {
@@ -67,12 +67,12 @@ class Vault(private val plugin: FluxEco, private val economyManager: EconomyMana
     }
 
     override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse {
-        if (economyManager.hasBalance(player.uniqueId, amount)) {
+        val currentBalance = CacheManager.getBalance(player.uniqueId)
+        if (currentBalance >= amount) {
             economyManager.subtractBalance(player.uniqueId, amount)
-            val newBalance = economyManager.getBalance(player.uniqueId)
+            val newBalance = CacheManager.getBalance(player.uniqueId)
             return EconomyResponse(amount, newBalance, EconomyResponse.ResponseType.SUCCESS, null)
         }
-        val currentBalance = economyManager.getBalance(player.uniqueId)
         return EconomyResponse(0.0, currentBalance, EconomyResponse.ResponseType.FAILURE, "Not enough money")
     }
 
@@ -82,7 +82,7 @@ class Vault(private val plugin: FluxEco, private val economyManager: EconomyMana
 
     override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse {
         economyManager.addBalance(player.uniqueId, amount)
-        val newBalance = economyManager.getBalance(player.uniqueId)
+        val newBalance = CacheManager.getBalance(player.uniqueId)
         return EconomyResponse(amount, newBalance, EconomyResponse.ResponseType.SUCCESS, null)
     }
 

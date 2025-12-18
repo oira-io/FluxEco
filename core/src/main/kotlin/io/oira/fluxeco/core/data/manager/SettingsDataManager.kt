@@ -5,9 +5,10 @@ import io.oira.fluxeco.core.data.model.PlayerSetting
 import io.oira.fluxeco.core.data.mongodb.repository.MongoPlayerSettingRepository
 import io.oira.fluxeco.core.data.table.PlayerSettings
 import io.oira.fluxeco.core.util.Threads
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.replace
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 object SettingsDataManager {

@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.redis
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.manager.ConfigManager
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig

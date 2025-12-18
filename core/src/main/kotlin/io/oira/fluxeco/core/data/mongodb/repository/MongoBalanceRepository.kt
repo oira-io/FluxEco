@@ -8,7 +8,7 @@ import io.oira.fluxeco.core.data.mongodb.document.BalanceDocument
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import java.util.UUID
+import java.util.*
 
 object MongoBalanceRepository {
     private fun getCollection() = MongoDBManager.getBalancesCollection()

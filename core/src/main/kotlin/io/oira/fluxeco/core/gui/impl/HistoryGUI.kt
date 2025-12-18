@@ -1,21 +1,20 @@
 package io.oira.fluxeco.core.gui.impl
 
-import io.oira.fluxeco.core.data.manager.PlayerProfileManager
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.data.model.Transaction
 import io.oira.fluxeco.core.data.model.TransactionType
 import io.oira.fluxeco.core.gui.BaseGUI
-import io.oira.fluxeco.core.manager.TransactionManager
 import io.oira.fluxeco.core.util.DateFormatter
 import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.format
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
-import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import java.util.logging.Level
 
@@ -57,19 +56,30 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
     }
 
     private fun handleRefresh(player: Player) {
-        loadTransactions()
-        currentPage = 0
-        refreshDynamicItems()
+        targetPlayerUuid?.let { CacheManager.invalidateTransactions(it) }
+
+        loadTransactionsAsync {
+            currentPage = 0
+            refreshDynamicItems()
+        }
         messageManager.sendMessageFromConfig(player, "messages.refresh-success", configManager)
     }
 
     private fun loadTransactions() {
         val uuid = targetPlayerUuid ?: return
         transactions = try {
-            TransactionManager.getTransactionHistory(uuid)
+            CacheManager.getTransactions(uuid)
         } catch (e: Exception) {
             plugin.logger.log(Level.WARNING, "Failed to load transactions for $uuid: ${e.message}", e)
             emptyList()
+        }
+    }
+
+    private fun loadTransactionsAsync(onComplete: () -> Unit = {}) {
+        val uuid = targetPlayerUuid ?: return
+        CacheManager.getTransactionsAsync(uuid) { txns ->
+            transactions = txns
+            onComplete()
         }
     }
 
@@ -137,7 +147,7 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
 
     private fun getDisplayName(uuid: UUID, viewerUuid: UUID): String {
         if (uuid == UUID(0, 0)) return "Console"
-        return if (uuid == viewerUuid) "You" else PlayerProfileManager.getProfile(uuid)?.name ?: Bukkit.getOfflinePlayer(uuid).name ?: "Unknown"
+        return if (uuid == viewerUuid) "You" else CacheManager.getPlayerProfile(uuid)?.name ?: Bukkit.getOfflinePlayer(uuid).name ?: "Unknown"
     }
 
     fun openForPlayer(viewer: Player, targetUuid: UUID) {

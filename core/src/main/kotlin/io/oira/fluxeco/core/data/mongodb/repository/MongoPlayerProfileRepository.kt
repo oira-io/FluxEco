@@ -7,7 +7,7 @@ import io.oira.fluxeco.core.data.mongodb.MongoDBManager
 import io.oira.fluxeco.core.data.mongodb.document.PlayerProfileDocument
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
-import java.util.UUID
+import java.util.*
 
 object MongoPlayerProfileRepository {
     private fun getCollection() = MongoDBManager.getPlayerProfilesCollection()

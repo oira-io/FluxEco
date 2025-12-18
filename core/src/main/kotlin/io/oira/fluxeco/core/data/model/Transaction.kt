@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.data.model
 
-import java.util.UUID
+import java.util.*
 
 enum class TransactionType {
     SENT,

@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.data.model
 
-import java.util.UUID
+import java.util.*
 
 data class PlayerProfile(
     val uuid: UUID,

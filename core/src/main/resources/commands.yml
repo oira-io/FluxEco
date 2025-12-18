@@ -5,7 +5,7 @@
 # | |    | | |_| |>  <| |___| (_| (_) |
 # |_|    |_|\__,_/_/\_\______\___\___/
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#                       ⚙ Main Configuration ⚙
+#                     ⚙ Commands Configuration ⚙
 #             Website:        https://oira.io
 #             Documentation:  https://oira.io/docs
 #             Discord:        https://discord.gg/oira
@@ -21,18 +21,29 @@ commands:
   economy:
     enabled: true
     cooldown: 0
-    permission: fluxeco.command.eco
+    permissions:
+      base: fluxeco.command.economy
+      give: fluxeco.command.economy.give
+      give-all: fluxeco.command.economy.give.all
+      take: fluxeco.command.economy.take
+      take-all: fluxeco.command.economy.take.all
+      set: fluxeco.command.economy.set
+      set-all: fluxeco.command.economy.set.all
+      reset: fluxeco.command.economy.reset
+      reset-all: fluxeco.command.economy.reset.all
     aliases:
       - eco
       - economy
+
   balance:
     enabled: true
     cooldown: 0
-    permission: fluxeco.command.balance
+    permissions:
+      base: fluxeco.command.balance
+      others: fluxeco.command.balance.others # Permission to check others' balances
     aliases:
       - balance
       - bal
-      - money
   balance-top:
     enabled: true
     cooldown: 0
@@ -42,7 +53,9 @@ commands:
   transaction-history:
     enabled: true
     cooldown: 0
-    permission: fluxeco.command.history
+    permissions:
+      base: fluxeco.command.history
+      others: fluxeco.command.history.others # Permission to check others' transaction histories
     aliases:
       - history
       - transactions
@@ -61,6 +74,8 @@ commands:
   stats:
     enabled: true
     cooldown: 0
-    permission: fluxeco.command.stats
+    permissions:
+      base: fluxeco.command.stats
+      others: fluxeco.command.stats.others # Permission to check others' stats
     aliases:
       - stats

@@ -1,10 +1,10 @@
 package io.oira.fluxeco.core.data.mongodb
 
-import com.mongodb.kotlin.client.coroutine.MongoClient
-import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
-import io.oira.fluxeco.FluxEco
+import com.mongodb.kotlin.client.coroutine.MongoClient
+import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.data.mongodb.document.BalanceDocument
 import io.oira.fluxeco.core.data.mongodb.document.PlayerProfileDocument
 import io.oira.fluxeco.core.data.mongodb.document.PlayerSettingDocument
@@ -12,7 +12,6 @@ import io.oira.fluxeco.core.data.mongodb.document.TransactionDocument
 import io.oira.fluxeco.core.manager.ConfigManager
 import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
-import kotlin.jvm.java
 
 object MongoDBManager {
     private lateinit var client: MongoClient

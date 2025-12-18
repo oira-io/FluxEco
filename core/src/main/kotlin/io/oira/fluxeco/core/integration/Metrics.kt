@@ -19,8 +19,6 @@ import java.util.function.Supplier
 import java.util.logging.Level
 import java.util.zip.GZIPOutputStream
 import javax.net.ssl.HttpsURLConnection
-import kotlin.collections.iterator
-import kotlin.text.iterator
 
 class Metrics(private val plugin: Plugin, serviceId: Int) {
 

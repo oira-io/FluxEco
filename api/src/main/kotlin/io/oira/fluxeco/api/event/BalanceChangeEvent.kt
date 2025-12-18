@@ -2,7 +2,7 @@ package io.oira.fluxeco.api.event
 
 import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
-import java.util.UUID
+import java.util.*
 
 class BalanceChangeEvent(
     val uuid: UUID,

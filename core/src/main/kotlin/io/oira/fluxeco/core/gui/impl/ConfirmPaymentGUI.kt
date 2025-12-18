@@ -1,11 +1,7 @@
 package io.oira.fluxeco.core.gui.impl
 
 import io.oira.fluxeco.core.gui.BaseGUI
-import io.oira.fluxeco.core.manager.ConfigManager
-import io.oira.fluxeco.core.manager.EconomyManager
-import io.oira.fluxeco.core.manager.SettingsManager
-import io.oira.fluxeco.core.manager.SoundManager
-import io.oira.fluxeco.core.manager.TransactionManager
+import io.oira.fluxeco.core.manager.*
 import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.Placeholders
 import io.oira.fluxeco.core.util.Threads

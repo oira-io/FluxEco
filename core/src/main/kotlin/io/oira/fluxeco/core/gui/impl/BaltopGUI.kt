@@ -2,24 +2,23 @@ package io.oira.fluxeco.core.gui.impl
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import com.google.gson.JsonObject
-import io.oira.fluxeco.core.data.manager.PlayerProfileManager
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.data.model.Balance
 import io.oira.fluxeco.core.gui.BaseGUI
-import io.oira.fluxeco.core.manager.EconomyManager
-import io.oira.fluxeco.core.redis.RedisManager
 import io.oira.fluxeco.core.util.Placeholders
+import io.oira.fluxeco.core.util.Threads
 import io.oira.fluxeco.core.util.format
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.meta.ItemMeta
 import java.util.*
 
 class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
@@ -79,9 +78,13 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
 
         lastRefreshTime = currentTime
         playerCache.clear()
-        loadBalances()
-        currentPage = 0
-        refreshDynamicItems()
+
+        CacheManager.invalidateBaltop()
+        loadBalancesAsync {
+            currentPage = 0
+            refreshDynamicItems()
+        }
+
         messageManager.sendMessageFromConfig(player, "messages.refresh-success", configManager)
     }
 
@@ -128,16 +131,24 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
 
     private fun loadBalances() {
         balances = try {
-            val allBalances = EconomyManager.getAllBalances().sortedByDescending { it.balance }
-
-            if (RedisManager.isEnabled) {
-                RedisManager.getCache()?.updateBaltopCache(allBalances)
-            }
-
-            allBalances
+            CacheManager.getBaltop()
         } catch (e: Exception) {
             plugin.logger.warning("Failed to load balances: ${e.message}")
             emptyList()
+        }
+    }
+
+    private fun loadBalancesAsync(onComplete: () -> Unit = {}) {
+        Threads.runAsync {
+            try {
+                val cachedBalances = CacheManager.getBaltop()
+                Threads.runSync {
+                    balances = cachedBalances
+                    onComplete()
+                }
+            } catch (e: Exception) {
+                plugin.logger.warning("Failed to load balances async: ${e.message}")
+            }
         }
     }
 
@@ -269,7 +280,7 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
 
     private fun getSkinUrl(uuid: UUID): String? {
         return try {
-            PlayerProfileManager.getSkinUrl(uuid)
+            CacheManager.getSkinUrl(uuid)
         } catch (_: Exception) {
             null
         }
@@ -306,25 +317,10 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
     }
 
     override fun open(player: Player) {
-        if (shouldRefreshBalances()) {
-            if (RedisManager.isEnabled) {
-                val redisCache = RedisManager.getCache()
-                if (redisCache != null && !redisCache.shouldRefreshBaltop()) {
-                    val cachedBaltop = redisCache.getBaltopFromCache()
-                    if (cachedBaltop != null) {
-                        balances = cachedBaltop.map { entry ->
-                            Balance(entry.uuid, entry.balance)
-                        }
-                    } else {
-                        loadBalances()
-                    }
-                } else {
-                    loadBalances()
-                }
-            } else {
-                loadBalances()
-            }
-            lastRefreshTime = System.currentTimeMillis()
+        balances = CacheManager.getBaltop()
+
+        if (CacheManager.isBaltopStale()) {
+            CacheManager.refreshBaltopAsync()
         }
 
         currentPage = 0
@@ -339,7 +335,7 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
     }
 
     private fun shouldRefreshBalances(): Boolean {
-        return balances.isEmpty() || System.currentTimeMillis() - lastRefreshTime > 30000
+        return balances.isEmpty() || CacheManager.isBaltopStale()
     }
 
     override fun onOpen(player: Player) {

@@ -5,7 +5,7 @@ import io.oira.fluxeco.api.model.TransactionType
 import io.oira.fluxeco.api.transaction.ITransactionManager
 import io.oira.fluxeco.core.data.manager.TransactionDataManager
 import io.oira.fluxeco.core.manager.TransactionManager
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class TransactionManagerImpl : ITransactionManager {

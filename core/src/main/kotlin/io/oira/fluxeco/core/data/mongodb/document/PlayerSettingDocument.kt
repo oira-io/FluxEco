@@ -2,7 +2,7 @@ package io.oira.fluxeco.core.data.mongodb.document
 
 import kotlinx.serialization.Serializable
 import org.bson.codecs.pojo.annotations.BsonId
-import java.util.UUID
+import java.util.*
 
 @Serializable
 data class PlayerSettingDocument(

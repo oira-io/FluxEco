@@ -1,32 +1,23 @@
-package io.oira.fluxeco
+package io.oira.fluxeco.core
 
 import com.tcoded.folialib.FoliaLib
 import io.oira.fluxeco.api.IFluxEcoAPI
 import io.oira.fluxeco.core.api.EconomyManagerImpl
 import io.oira.fluxeco.core.api.FluxEcoAPIImpl
 import io.oira.fluxeco.core.api.TransactionManagerImpl
-import io.oira.fluxeco.core.command.BalanceCommand
-import io.oira.fluxeco.core.command.BaltopCommand
-import io.oira.fluxeco.core.command.EcoCommand
-import io.oira.fluxeco.core.command.FluxEcoCommand
-import io.oira.fluxeco.core.command.HistoryCommand
-import io.oira.fluxeco.core.command.PayAlertsCommand
-import io.oira.fluxeco.core.command.PayCommand
-import io.oira.fluxeco.core.command.PayToggleCommand
-import io.oira.fluxeco.core.command.StatsCommand
-import io.oira.fluxeco.core.command.permissions.ConfigPermissionFactory
+import io.oira.fluxeco.core.cache.CacheManager
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.gui.impl.BaltopGUI
 import io.oira.fluxeco.core.gui.impl.ConfirmPaymentGUI
 import io.oira.fluxeco.core.gui.impl.HistoryGUI
 import io.oira.fluxeco.core.gui.impl.StatsGUI
 import io.oira.fluxeco.core.integration.Metrics
-import io.oira.fluxeco.core.integration.PlaceholderAPI
 import io.oira.fluxeco.core.integration.MiniPlaceholders
+import io.oira.fluxeco.core.integration.PlaceholderAPI
 import io.oira.fluxeco.core.integration.Vault
-import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
 import io.oira.fluxeco.core.listener.PlayerJoinListener
 import io.oira.fluxeco.core.listener.PlayerQuitListener
+import io.oira.fluxeco.core.manager.CommandManager
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.EconomyManager
 import io.oira.fluxeco.core.manager.MessageManager
@@ -40,7 +31,6 @@ import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-import revxrsal.commands.bukkit.BukkitLamp
 
 class FluxEco : JavaPlugin() {
 
@@ -87,6 +77,8 @@ class FluxEco : JavaPlugin() {
 
             initializeRedis()
 
+            initializeCache()
+
             initializeAPI(configManager)
 
             Metrics(this, pluginId)
@@ -100,7 +92,8 @@ class FluxEco : JavaPlugin() {
             initializeMiniPlaceholders()
 
             registerListeners()
-            registerCommands()
+
+            CommandManager.register()
 
             displayStartupBanner()
         } catch (e: Exception) {
@@ -115,6 +108,8 @@ class FluxEco : JavaPlugin() {
             cleanupGUIs()
 
             IFluxEcoAPI.unsetInstance()
+
+            CacheManager.shutdown()
 
             RedisManager.shutdown()
 
@@ -147,6 +142,15 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    private fun initializeCache() {
+        try {
+            CacheManager.init()
+            logger.info("Cache system initialized successfully!")
+        } catch (e: Exception) {
+            logger.warning("Failed to initialize cache: ${e.message}")
+        }
+    }
+
     private fun initializeAPI(configManager: ConfigManager) {
         try {
             val economyManager = EconomyManagerImpl(this, configManager)
@@ -171,56 +175,6 @@ class FluxEco : JavaPlugin() {
     private fun registerListeners() {
         server.pluginManager.registerEvents(PlayerJoinListener(), this)
         server.pluginManager.registerEvents(PlayerQuitListener(), this)
-    }
-
-    private fun registerCommands() {
-        try {
-            val lamp = BukkitLamp.builder(this)
-                .permissionFactory(ConfigPermissionFactory(this))
-                .parameterTypes { types ->
-                    types.addParameterType(AsyncOfflinePlayer::class.java, AsyncOfflinePlayer.parameterType())
-                }
-                .suggestionProviders { suggestions ->
-                    suggestions.addProvider(AsyncOfflinePlayer::class.java) { _ ->
-                        val names = mutableSetOf<String>()
-
-                        Bukkit.getOnlinePlayers()
-                            .filter { player ->
-                                !player.hasMetadata("vanished") || player.getMetadata("vanished").all { !it.asBoolean() }
-                            }
-                            .forEach { names.add(it.name) }
-
-                        if (RedisManager.isEnabled) {
-                            RedisManager.getCache()?.getAllPlayerNames()?.let { redisNames ->
-                                names.addAll(redisNames)
-                            }
-                        }
-
-                        names
-                    }
-                }
-                .build()
-
-            lamp.register(
-                EcoCommand(),
-                BalanceCommand(),
-                BaltopCommand(),
-                HistoryCommand(),
-                PayCommand(),
-                PayToggleCommand(),
-                PayAlertsCommand(),
-                FluxEcoCommand()
-            )
-
-            if (config.getBoolean("stats.enabled", true)) {
-                val statsCommandPath = config.getString("stats.command", "stats") ?: "stats"
-                lamp.register(revxrsal.commands.orphan.Orphans.path(statsCommandPath).handler(StatsCommand()))
-            }
-
-        } catch (e: Exception) {
-            logger.severe("Failed to register commands: ${e.message}")
-            e.printStackTrace()
-        }
     }
 
     private fun initializeGUIs() {

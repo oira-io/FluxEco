@@ -1,7 +1,7 @@
 package io.oira.fluxeco.api.economy
 
 import io.oira.fluxeco.api.model.Balance
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 interface IEconomyManager {

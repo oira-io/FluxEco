@@ -3,7 +3,7 @@ package io.oira.fluxeco.core.gui.impl
 import de.rapha149.signgui.SignGUI
 import de.rapha149.signgui.SignGUIAction
 import de.rapha149.signgui.exception.SignGUIVersionException
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.MessageManager
 import io.oira.fluxeco.core.manager.SoundManager

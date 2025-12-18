@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.gui
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.MessageManager
 import io.oira.fluxeco.core.manager.SoundManager

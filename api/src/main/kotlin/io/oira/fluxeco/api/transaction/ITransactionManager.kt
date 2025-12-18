@@ -1,7 +1,7 @@
 package io.oira.fluxeco.api.transaction
 
 import io.oira.fluxeco.api.model.Transaction
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 interface ITransactionManager {

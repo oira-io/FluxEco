@@ -76,3 +76,36 @@ format:
 advanced:
   # Maximum number of concurrent async operations (pool size)
   max-pool-size: 6
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                       ⚡ Cache Configuration ⚡
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cache:
+  # Enable or disable caching entirely
+  enabled: true
+  # Enable background refresh tasks (recommended for best performance)
+  background-refresh: true
+
+  # Baltop cache settings
+  baltop:
+    # How long to cache baltop data (in seconds)
+    ttl: 60
+
+  # Player profile cache (for player heads/skins)
+  profiles:
+    # How long to cache player profiles (in seconds)
+    ttl: 300
+    # Maximum number of profiles to keep in cache
+    max-size: 500
+
+  # Transaction history cache
+  transactions:
+    # How long to cache transaction history (in seconds)
+    ttl: 60
+    # Maximum number of player transaction histories to cache
+    max-size: 100
+
+  # Individual balance cache
+  balances:
+    # How long to cache individual balances (in seconds)
+    ttl: 10

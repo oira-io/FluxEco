@@ -1,6 +1,6 @@
 package io.oira.fluxeco.core.data.manager
 
-import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.FluxEco
 import io.oira.fluxeco.core.data.DatabaseManager
 import io.oira.fluxeco.core.data.model.Transaction
 import io.oira.fluxeco.core.data.model.TransactionType
