@@ -21,6 +21,12 @@ object EconomyManager {
         return BalancesDataManager.getBalance(uuid)?.balance ?: 0.0
     }
 
+    /**
+     * Retrieve the balance for the specified account UUID.
+     *
+     * @param uuid The UUID of the account holder.
+     * @return The account balance for the specified UUID; 0.0 if no balance exists.
+     */
     fun getBalanceAsync(uuid: UUID): CompletableFuture<Double> {
         val future = CompletableFuture<Double>()
         Threads.runAsync {
@@ -34,12 +40,25 @@ object EconomyManager {
         return future
     }
 
+    /**
+     * Updates the stored balance for the given player and synchronizes the cached value.
+     *
+     * @param uuid The player's UUID whose balance will be set.
+     * @param amount The new balance amount to apply.
+     * @return An integer result code returned by the data-layer update operation.
     fun setBalance(uuid: UUID, amount: Double): Int {
         val result = BalancesDataManager.updateBalance(uuid, amount)
         CacheManager.updateBalance(uuid, amount)
         return result
     }
 
+    /**
+     * Sets the balance for the specified account and returns the update result.
+     *
+     * @param uuid The unique identifier of the account.
+     * @param amount The balance amount to set.
+     * @return An integer result code indicating the outcome of the balance update.
+     */
     fun setBalanceAsync(uuid: UUID, amount: Double): CompletableFuture<Int> {
         val future = CompletableFuture<Int>()
         Threads.runAsync {

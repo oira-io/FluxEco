@@ -18,9 +18,21 @@ class FluxEcoCommand : OrphanCommand {
     private val messageManager: MessageManager = MessageManager.getInstance()
     private val configManager = ConfigManager(plugin, "messages.yml")
 
+    /**
+     * Marks the base command as a placeholder for the command framework.
+     *
+     * This method is intentionally empty and exists solely to satisfy the command framework's placeholder requirement.
+     */
     @CommandPlaceholder
     fun onCommand() {}
 
+    /**
+     * Reloads plugin configuration, GUI components, message and number formatting managers, and notifies the sender with the elapsed reload time.
+     *
+     * Sends the configured message "fluxeco.reload-success" to the provided sender with a placeholder `ms` containing the reload duration in milliseconds.
+     *
+     * @param sender The player who invoked the reload command and will receive the confirmation message.
+     */
     @Subcommand("reload")
     @Description("Reloads the plugin configuration.")
     @CommandPermission("fluxeco.command.fluxeco.reload")

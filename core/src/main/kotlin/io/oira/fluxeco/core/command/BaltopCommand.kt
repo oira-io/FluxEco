@@ -9,6 +9,11 @@ import revxrsal.commands.orphan.OrphanCommand
 
 class BaltopCommand : OrphanCommand {
 
+    /**
+     * Opens the balance leaderboard GUI for the given player.
+     *
+     * @param sender The player to display the balance leaderboard GUI to.
+     */
     @CommandPlaceholder
     @Description("Opens the balance leaderboard GUI.")
     @ConfigPermission("commands.balance-top.permission")

@@ -17,6 +17,14 @@ class PayToggleCommand : OrphanCommand {
     private val configManager = ConfigManager(plugin, "messages.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
+    /**
+     * Toggle whether the player can receive payments.
+     *
+     * If `toggle` is "on" or "off", sets the payment-receive state accordingly; if `toggle` is null, flips the current state.
+     * Invalid values send an error message and abort without changing the state.
+     *
+     * @param toggle "on" to enable, "off" to disable, or null to invert the current setting.
+     */
     @CommandPlaceholder
     @Description("Toggles whether you can receive payments.")
     @ConfigPermission("commands.pay-toggle.permission")

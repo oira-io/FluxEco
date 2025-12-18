@@ -79,6 +79,12 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
         refreshItems()
     }
 
+    /**
+     * Create placeholders for the currently targeted player, including their formatted balance and an optional viewer.
+     *
+     * @param player Optional player to associate with the returned placeholders; may be null.
+     * @return A `Placeholders` instance with the `balance` placeholder set to the targeted player's formatted balance and the provided player associated. Returns an empty `Placeholders` if no target player UUID is set.
+     */
     private fun createPlayerPlaceholders(player: Player?): Placeholders {
         val uuid = targetPlayerUuid ?: return Placeholders()
         val balance = CacheManager.getBalance(uuid)
@@ -95,4 +101,3 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
         super.reload()
     }
 }
-

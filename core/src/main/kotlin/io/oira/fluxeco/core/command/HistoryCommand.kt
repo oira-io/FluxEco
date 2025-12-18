@@ -14,6 +14,11 @@ class HistoryCommand : OrphanCommand {
 
     private val foliaLib = FluxEco.instance.foliaLib
 
+    /**
+     * Opens the transaction history GUI for the calling player.
+     *
+     * @param sender The player who invoked the command.
+     */
     @CommandPlaceholder
     @Description("Opens the transaction history GUI.")
     @ConfigPermission("commands.transaction-history.permissions.base")
@@ -21,6 +26,12 @@ class HistoryCommand : OrphanCommand {
         FluxEco.instance.historyGui.open(sender)
     }
 
+    /**
+     * Opens the transaction history GUI for the specified target on behalf of the sender.
+     *
+     * @param sender The player who will receive and view the GUI.
+     * @param target An AsyncOfflinePlayer representing the target whose offline data will be resolved before the GUI is opened.
+     */
     @Description("Opens the transaction history GUI for a specific player.")
     @ConfigPermission("commands.transaction-history.permissions.others")
     fun historyOther(sender: Player, @Named("target") target: AsyncOfflinePlayer) {

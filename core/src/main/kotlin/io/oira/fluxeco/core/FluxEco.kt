@@ -63,6 +63,17 @@ class FluxEco : JavaPlugin() {
 
     val pluginId: Int = 27752
 
+    /**
+     * Initializes and starts the FluxEco plugin by loading configuration, formatters,
+     * threads, persistence and cache layers, API and integrations, GUIs, listeners,
+     * commands, and prints the startup banner.
+     *
+     * Initializes default configuration, the ConfigManager, number and date formatters,
+     * database, Redis, cache, the plugin API, metrics, GUIs, Vault and placeholder
+     * integrations, registers event listeners and commands, and displays the startup banner.
+     * If an exception occurs during startup, the error is logged, the stack trace is printed,
+     * and the plugin is disabled.
+     */
     override fun onEnable() {
         try {
             saveDefaultConfig()
@@ -103,6 +114,12 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    /**
+     * Performs an orderly shutdown of the plugin, releasing resources and unregistering components.
+     *
+     * Cleans up GUI instances, unsets the public API instance, shuts down cache, Redis, database, and thread helpers,
+     * and logs successful disablement. If an error occurs during shutdown, a warning is logged and the stack trace is printed.
+     */
     override fun onDisable() {
         try {
             cleanupGUIs()
@@ -134,6 +151,11 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    /**
+     * Initializes the Redis subsystem for the plugin.
+     *
+     * Attempts to start Redis via RedisManager; on failure it logs a warning with the error message and continues startup.
+     */
     private fun initializeRedis() {
         try {
             RedisManager.init()
@@ -142,6 +164,11 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    /**
+     * Initializes the plugin's cache subsystem.
+     *
+     * Logs an informational message on successful initialization or a warning if initialization fails.
+     */
     private fun initializeCache() {
         try {
             CacheManager.init()
@@ -151,6 +178,15 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    /**
+     * Initializes and registers the FluxEco API implementation for the plugin.
+     *
+     * Creates the economy and transaction managers, constructs the API with the plugin version,
+     * and sets it as the global IFluxEcoAPI instance.
+     *
+     * @param configManager Provides configuration needed to construct the economy manager.
+     * @throws Exception If any error occurs while initializing or registering the API.
+     */
     private fun initializeAPI(configManager: ConfigManager) {
         try {
             val economyManager = EconomyManagerImpl(this, configManager)
@@ -172,11 +208,23 @@ class FluxEco : JavaPlugin() {
         }
     }
 
+    /**
+     * Registers the plugin's player join and player quit event listeners with the server plugin manager.
+     */
     private fun registerListeners() {
         server.pluginManager.registerEvents(PlayerJoinListener(), this)
         server.pluginManager.registerEvents(PlayerQuitListener(), this)
     }
 
+    /**
+     * Initializes GUI instances and registers them as event listeners.
+     *
+     * Creates and stores instances for Baltop, History, and ConfirmPayment GUIs and,
+     * if "stats.enabled" is true in the plugin config, for the Stats GUI, then
+     * registers each with the server's plugin manager.
+     *
+     * @throws Exception if any GUI fails to initialize or register; the exception is rethrown.
+     */
     private fun initializeGUIs() {
         try {
             baltopGuiInstance = BaltopGUI()

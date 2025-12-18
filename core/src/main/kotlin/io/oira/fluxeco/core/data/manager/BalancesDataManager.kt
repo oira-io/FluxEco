@@ -12,6 +12,11 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 object BalancesDataManager {
+    /**
+     * Retrieve all balance records from the configured database.
+     *
+     * @return A list of `Balance` objects representing every row in the `Balances` table.
+     */
     fun getAllBalances(): List<Balance> = transaction(DatabaseManager.getDatabase()) {
         Balances.selectAll().map {
             Balance(

@@ -46,26 +46,71 @@ class Vault(private val plugin: FluxEco, private val economyManager: EconomyMana
         return true
     }
 
+    /**
+     * Checks whether the specified player has an account; the provided world name is ignored.
+     *
+     * @param player The player to check.
+     * @param worldName Ignored; kept for API compatibility.
+     * @return `true` if the player has an account, `false` otherwise.
+     */
     override fun hasAccount(player: OfflinePlayer, worldName: String): Boolean {
         return hasAccount(player)
     }
 
+    /**
+     * Retrieve the cached balance for the given player.
+     *
+     * @param player The player whose cached balance will be returned.
+     * @return The player's current balance as stored in the cache.
+     */
     override fun getBalance(player: OfflinePlayer): Double {
         return CacheManager.getBalance(player.uniqueId)
     }
 
+    /**
+     * Retrieve the specified player's balance; the `world` parameter is ignored.
+     *
+     * @param player The player whose balance to retrieve.
+     * @param world The world name (not used by this implementation).
+     * @return The player's current balance.
+     */
     override fun getBalance(player: OfflinePlayer, world: String): Double {
         return getBalance(player)
     }
 
+    /**
+     * Check whether the player's cached balance is at least the given amount.
+     *
+     * @param player The player whose balance is checked.
+     * @param amount The amount to compare against the player's balance.
+     * @return `true` if the player's cached balance is greater than or equal to `amount`, `false` otherwise.
+     */
     override fun has(player: OfflinePlayer, amount: Double): Boolean {
         return CacheManager.getBalance(player.uniqueId) >= amount
     }
 
+    /**
+     * Checks whether the player has at least the specified amount in their account.
+     *
+     * The `worldName` parameter is ignored; account checks are global.
+     *
+     * @param player The player whose balance to check.
+     * @param worldName Ignored world name parameter kept for API compatibility.
+     * @param amount The amount to verify against the player's balance.
+     * @return `true` if the player's balance is greater than or equal to `amount`, `false` otherwise.
+     */
     override fun has(player: OfflinePlayer, worldName: String, amount: Double): Boolean {
         return has(player, amount)
     }
 
+    /**
+     * Attempts to withdraw a specified amount from the player's account.
+     *
+     * @param player The player whose account to withdraw from.
+     * @param amount The amount to withdraw.
+     * @return An `EconomyResponse` with `ResponseType.SUCCESS` and the updated balance when the withdrawal succeeds;
+     * `ResponseType.FAILURE` with the message "Not enough money" and the current balance when it fails.
+     */
     override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse {
         val currentBalance = CacheManager.getBalance(player.uniqueId)
         if (currentBalance >= amount) {
@@ -80,6 +125,13 @@ class Vault(private val plugin: FluxEco, private val economyManager: EconomyMana
         return withdrawPlayer(player, amount)
     }
 
+    /**
+     * Deposits the specified amount into the player's account and returns the resulting economy response.
+     *
+     * @param player The target offline player whose account will be credited.
+     * @param amount The amount to add to the player's balance.
+     * @return An EconomyResponse with `ResponseType.SUCCESS`, the deposited `amount`, and the player's updated balance.
+     */
     override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse {
         economyManager.addBalance(player.uniqueId, amount)
         val newBalance = CacheManager.getBalance(player.uniqueId)

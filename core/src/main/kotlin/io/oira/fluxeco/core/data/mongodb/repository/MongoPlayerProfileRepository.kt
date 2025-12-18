@@ -10,7 +10,12 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 
 object MongoPlayerProfileRepository {
-    private fun getCollection() = MongoDBManager.getPlayerProfilesCollection()
+    /**
+ * Retrieve the MongoDB collection used to store player profiles.
+ *
+ * @return The player profiles MongoDB collection instance.
+ */
+private fun getCollection() = MongoDBManager.getPlayerProfilesCollection()
 
     fun getProfile(uuid: UUID): PlayerProfile? = runBlocking {
         val doc = getCollection().find(Filters.eq("_id", uuid.toString())).firstOrNull()
@@ -44,4 +49,3 @@ object MongoPlayerProfileRepository {
 
     fun getCapeUrl(uuid: UUID): String? = getProfile(uuid)?.capeUrl
 }
-

@@ -10,7 +10,12 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 
 object MongoPlayerSettingRepository {
-    private fun getCollection() = MongoDBManager.getPlayerSettingsCollection()
+    /**
+ * Obtain the MongoDB collection used for player settings.
+ *
+ * @return The MongoDB collection for player settings.
+ */
+private fun getCollection() = MongoDBManager.getPlayerSettingsCollection()
 
     fun getSetting(uuid: UUID): PlayerSetting? = runBlocking {
         val doc = getCollection().find(Filters.eq("_id", uuid.toString())).firstOrNull()
@@ -57,4 +62,3 @@ object MongoPlayerSettingRepository {
 
     fun getPayAlerts(uuid: UUID): Boolean = getSetting(uuid)?.payAlerts ?: true
 }
-

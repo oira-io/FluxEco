@@ -47,6 +47,14 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
         refreshDynamicItems()
     }
 
+    /**
+     * Advances the GUI to the next page when possible, otherwise notifies the player of the boundary.
+     *
+     * If the current page can be incremented, the page index is advanced; if not, an error message is sent
+     * and an error sound is played. The GUI's dynamic items are refreshed after the attempt.
+     *
+     * @param player The player viewing the GUI who triggered the action.
+     */
     private fun handleNextPage(player: Player) {
         if (currentPage < getMaxPages() - 1) currentPage++ else {
             messageManager.sendMessageFromConfig(player, "messages.next-page-error", configManager)
@@ -55,6 +63,15 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
         refreshDynamicItems()
     }
 
+    /**
+     * Refreshes the transaction list for the current target player and updates the GUI.
+     *
+     * Invalidates cached transactions for the target (if set), reloads transactions asynchronously,
+     * resets the current page to the first page, refreshes visible GUI items, and sends a success
+     * message to the provided player.
+     *
+     * @param player The player who triggered the refresh and who will receive the confirmation message.
+     */
     private fun handleRefresh(player: Player) {
         targetPlayerUuid?.let { CacheManager.invalidateTransactions(it) }
 
@@ -65,6 +82,12 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
         messageManager.sendMessageFromConfig(player, "messages.refresh-success", configManager)
     }
 
+    /**
+     * Loads transaction history for the configured target player and assigns it to the `transactions` field.
+     *
+     * If `targetPlayerUuid` is null the function returns immediately. On failure to retrieve transactions it logs a warning
+     * and sets `transactions` to an empty list.
+     */
     private fun loadTransactions() {
         val uuid = targetPlayerUuid ?: return
         transactions = try {
@@ -75,6 +98,11 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
         }
     }
 
+    /**
+     * Asynchronously loads transactions for the current target player and updates the internal transactions list.
+     *
+     * @param onComplete Invoked after transactions have been loaded and assigned. 
+     */
     private fun loadTransactionsAsync(onComplete: () -> Unit = {}) {
         val uuid = targetPlayerUuid ?: return
         CacheManager.getTransactionsAsync(uuid) { txns ->
@@ -83,6 +111,11 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
         }
     }
 
+    /**
+     * Filter the loaded transactions according to the currently selected sort option.
+     *
+     * @return A list of transactions filtered by `currentSort`: `sent` -> transactions of type `SENT`, `received` -> `RECEIVED`, `admin_received` -> `ADMIN_RECEIVED`, `admin_deducted` -> `ADMIN_DEDUCTED`, otherwise all loaded transactions.
+     */
     private fun getFilteredTransactions(): List<Transaction> {
         return when (currentSort) {
             "sent" -> transactions.filter { it.type == TransactionType.SENT }
@@ -145,11 +178,27 @@ class HistoryGUI : BaseGUI("gui/history-ui.yml") {
         container.set(soundKey, PersistentDataType.STRING, entryConfig.getString("sound", "none") ?: "none")
     }
 
+    /**
+     * Resolve a human-readable display name for a player UUID using the viewer's perspective.
+     *
+     * @param uuid The UUID whose display name to resolve (may represent the Console as UUID(0, 0)).
+     * @param viewerUuid The viewer's UUID used to return "You" when it matches `uuid`.
+     * @return The resolved display name: "Console" for UUID(0, 0); "You" if `uuid` equals `viewerUuid`; the cached player profile name if available; the offline player name if present; otherwise "Unknown".
+     */
     private fun getDisplayName(uuid: UUID, viewerUuid: UUID): String {
         if (uuid == UUID(0, 0)) return "Console"
         return if (uuid == viewerUuid) "You" else CacheManager.getPlayerProfile(uuid)?.name ?: Bukkit.getOfflinePlayer(uuid).name ?: "Unknown"
     }
 
+    /**
+     * Opens the history GUI for a specified target player and prepares its displayed data.
+     *
+     * Sets the target player UUID, loads that player's transactions, resets the current page to the first,
+     * refreshes dynamic GUI items, opens the GUI for the viewing player, and updates the sort control item.
+     *
+     * @param viewer The player who will view the GUI.
+     * @param targetUuid The UUID of the player whose transaction history will be displayed.
+     */
     fun openForPlayer(viewer: Player, targetUuid: UUID) {
         targetPlayerUuid = targetUuid
         loadTransactions()

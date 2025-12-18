@@ -23,6 +23,19 @@ class PayCommand : OrphanCommand {
     private val mainConfigManager = ConfigManager(plugin, "config.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
+    /**
+     * Initiates a player-to-player payment for the specified amount.
+     *
+     * Parses and validates the provided amount, verifies recipient eligibility and sender balance,
+     * and then either opens a confirmation UI (if enabled) or completes the transfer.
+     * On success, updates both players' balances, records the transaction, and notifies sender and recipient
+     * (online recipient is messaged directly; offline recipient may receive a Redis notification if enabled).
+     * The command also emits appropriate feedback messages and sounds for all validation and outcome states.
+     *
+     * @param sender The player issuing the payment command.
+     * @param target The recipient as an AsyncOfflinePlayer (may be online or offline).
+     * @param amount The amount to transfer, provided as a string that will be parsed as a number.
+     */
     @CommandPlaceholder
     @Description("Pays money to another player.")
     @ConfigPermission("commands.pay.permission")

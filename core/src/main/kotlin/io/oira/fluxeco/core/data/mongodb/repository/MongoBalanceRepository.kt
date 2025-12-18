@@ -11,7 +11,12 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 
 object MongoBalanceRepository {
-    private fun getCollection() = MongoDBManager.getBalancesCollection()
+    /**
+ * Retrieve the MongoDB collection used to store balance documents.
+ *
+ * @return The balances collection from the MongoDB manager.
+ */
+private fun getCollection() = MongoDBManager.getBalancesCollection()
 
     fun getAllBalances(): List<Balance> = runBlocking {
         getCollection().find().toList().map { doc ->
@@ -57,4 +62,3 @@ object MongoBalanceRepository {
         result.deletedCount.toInt()
     }
 }
-

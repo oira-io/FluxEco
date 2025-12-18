@@ -22,6 +22,9 @@ class BalanceCommand : OrphanCommand {
     private val configManager = ConfigManager(plugin, "messages.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
+    /**
+     * Displays the command sender's current economy balance using the configured message templates.
+     */
     @CommandPlaceholder
     @Description("Shows your current balance.")
     @ConfigPermission("commands.balance.permissions.base")
@@ -41,6 +44,12 @@ class BalanceCommand : OrphanCommand {
         }
     }
 
+    /**
+     * Shows another player's balance to the command sender.
+     *
+     * @param sender The player who invoked the command and will receive the message.
+     * @param target The target player whose balance will be looked up and displayed (may be online or offline).
+     */
     @Description("Shows another player's balance.")
     @ConfigPermission("commands.balance.permissions.others")
     fun balanceOther(sender: Player, @Named("target") target: AsyncOfflinePlayer) {

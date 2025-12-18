@@ -27,6 +27,17 @@ object CommandManager {
         "stats" to StatsCommand::class
     )
 
+    /**
+     * Initializes the command framework and registers Orphan-based command handlers declared in `commandMap`.
+     *
+     * Builds and configures the command lamp, then iterates `commandMap` to instantiate and register each command
+     * whose configuration section "commands.<name>" exists, has `enabled` true (default true), and provides at least one alias.
+     *
+     * The suggestion provider for `AsyncOfflinePlayer` supplies online player names that are not marked as vanished
+     * and, when Redis is enabled, adds player names from the Redis cache.
+     *
+     * Any exception during initialization or registration is logged as a severe error and the stack trace is printed.
+     */
     fun register() {
         try {
             val lamp = BukkitLamp.builder(plugin)

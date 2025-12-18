@@ -13,6 +13,16 @@ import org.bukkit.entity.Player
 
 class MiniPlaceholders {
 
+    /**
+     * Registers the "fluxeco" MiniPlaceholders expansion and its placeholders with the MiniPlaceholders system.
+     *
+     * The expansion provides:
+     * - "balance": the player's raw balance as text.
+     * - "balance_formatted": the player's formatted balance as text.
+     * - "toggle_payments": "enabled" or "disabled" based on the player's payments toggle.
+     * - "pay_alerts": "enabled" or "disabled" based on the player's pay alerts setting.
+     * - "tps": the server's current tick-per-second value.
+     */
     fun register() {
         val expansion = expansion("fluxeco") {
             audience<Player>("balance") { player, _, _ ->

@@ -17,6 +17,14 @@ class PayAlertsCommand : OrphanCommand {
     private val configManager = ConfigManager(plugin, "messages.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
+    /**
+     * Toggles a player's payment alert setting and notifies them of the result.
+     *
+     * If `toggle` is "on" or "off" the setting is set accordingly; if `toggle` is omitted the current setting is flipped.
+     * Sends a localized confirmation or error message to the player and plays the appropriate feedback sound.
+     *
+     * @param toggle Optional; "on" to enable alerts, "off" to disable alerts, or null to toggle the current state.
+     */
     @CommandPlaceholder
     @Description("Toggles whether you receive payment alert messages.")
     @ConfigPermission("commands.pay-alerts.permission")

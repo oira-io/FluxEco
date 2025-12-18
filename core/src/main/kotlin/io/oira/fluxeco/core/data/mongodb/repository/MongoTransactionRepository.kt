@@ -11,7 +11,12 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 
 object MongoTransactionRepository {
-    private fun getCollection() = MongoDBManager.getTransactionsCollection()
+    /**
+ * Retrieve the MongoDB collection used for transaction documents.
+ *
+ * @return The transactions collection provided by MongoDBManager.
+ */
+private fun getCollection() = MongoDBManager.getTransactionsCollection()
 
     fun getTransactions(uuid: UUID): List<Transaction> = runBlocking {
         getCollection().find(Filters.eq("playerUuid", uuid.toString()))
@@ -74,4 +79,3 @@ object MongoTransactionRepository {
         getCollection().find(Filters.eq("_id", id)).limit(1).toList().isNotEmpty()
     }
 }
-

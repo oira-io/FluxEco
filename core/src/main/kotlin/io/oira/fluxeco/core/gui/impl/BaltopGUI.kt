@@ -67,6 +67,16 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         }
     }
 
+    /**
+     * Initiates a manual baltop refresh requested by a player.
+     *
+     * Enforces the configured refresh cooldown; if allowed, clears the local player cache,
+     * invalidates the shared baltop cache, triggers an asynchronous reload of balances,
+     * resets the current page to the first page and refreshes displayed items when the load completes,
+     * and sends a refresh-success message to the requesting player.
+     *
+     * @param player The player who requested the refresh.
+     */
     private fun handleRefresh(player: Player) {
         val currentTime = System.currentTimeMillis()
         val refreshCooldown = getRefreshCooldown()
@@ -129,6 +139,11 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         return (config.getConfigurationSection("items.refresh")?.getLong("cooldown", 5) ?: 5) * 1000
     }
 
+    /**
+     * Loads the baltop balances into the `balances` field from the CacheManager.
+     *
+     * On failure, logs a warning and sets `balances` to an empty list.
+     */
     private fun loadBalances() {
         balances = try {
             CacheManager.getBaltop()
@@ -138,6 +153,12 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         }
     }
 
+    /**
+     * Loads baltop balances on a background thread and updates the GUI's internal balances list on the main thread.
+     *
+     * If fetching balances fails, the exception is logged and the completion callback is not invoked.
+     *
+     * @param onComplete Callback executed on the main thread after `balances` has been updated. */
     private fun loadBalancesAsync(onComplete: () -> Unit = {}) {
         Threads.runAsync {
             try {
@@ -152,6 +173,12 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         }
     }
 
+    /**
+     * Retrieves a CachedPlayer for the given UUID from the in-memory cache, creating and caching a new entry if absent.
+     *
+     * @param uuid The UUID of the player.
+     * @return The cached or newly created CachedPlayer; the name defaults to "Unknown" if the offline player has no name. 
+     */
     private fun getCachedPlayer(uuid: UUID): CachedPlayer {
         return playerCache.getOrPut(uuid) {
             val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
@@ -278,6 +305,12 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         }
     }
 
+    /**
+     * Retrieves the skin texture URL for the given player UUID from the cache.
+     *
+     * @param uuid Player UUID to look up.
+     * @return The skin URL if available, `null` if not found or an error occurs while fetching.
+     */
     private fun getSkinUrl(uuid: UUID): String? {
         return try {
             CacheManager.getSkinUrl(uuid)
@@ -311,11 +344,24 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         return json
     }
 
+    /**
+     * Calculate the total number of pages required to display the current filtered balances.
+     *
+     * @return `1` if there are no filtered entries, otherwise the number of pages computed from the filtered size and `entriesPerPage`.
+     */
     override fun getMaxPages(): Int {
         val filtered = filterData(balances)
         return if (filtered.isEmpty()) 1 else ((filtered.size - 1) / entriesPerPage) + 1
     }
 
+    /**
+     * Opens the baltop GUI for the specified player, ensuring current balances are loaded,
+     * resetting the page state, refreshing GUI items, and placing the player's entry slot.
+     *
+     * This may initiate a background refresh of the baltop cache if the cached data is stale.
+     *
+     * @param player The player who will have the GUI opened.
+     */
     override fun open(player: Player) {
         balances = CacheManager.getBaltop()
 
@@ -334,10 +380,22 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
         super.open(player)
     }
 
+    /**
+     * Determines whether the GUI should reload baltop balances.
+     *
+     * @return `true` if there are no loaded balances or the baltop cache is stale, `false` otherwise.
+     */
     private fun shouldRefreshBalances(): Boolean {
         return balances.isEmpty() || CacheManager.isBaltopStale()
     }
 
+    /**
+     * Sends the GUI open message to the given player with the current total number of baltop entries.
+     *
+     * The message uses the `total` placeholder set to the current size of the `balances` list.
+     *
+     * @param player The player who opened the GUI.
+     */
     override fun onOpen(player: Player) {
         val totalPlayers = balances.size
         val placeholders = Placeholders().add("total", totalPlayers.toString())
