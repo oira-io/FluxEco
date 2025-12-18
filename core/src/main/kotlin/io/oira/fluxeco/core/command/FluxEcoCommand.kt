@@ -7,16 +7,20 @@ import io.oira.fluxeco.core.util.NumberFormatter
 import io.oira.fluxeco.core.util.Placeholders
 import org.bukkit.entity.Player
 import revxrsal.commands.annotation.Command
+import revxrsal.commands.annotation.CommandPlaceholder
 import revxrsal.commands.annotation.Description
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.annotation.CommandPermission
+import revxrsal.commands.orphan.OrphanCommand
 
-@Command("fluxeco")
-class FluxEcoCommand {
+class FluxEcoCommand : OrphanCommand {
 
     private val plugin: FluxEco = FluxEco.instance
     private val messageManager: MessageManager = MessageManager.getInstance()
     private val configManager = ConfigManager(plugin, "messages.yml")
+
+    @CommandPlaceholder
+    fun onCommand() {}
 
     @Subcommand("reload")
     @Description("Reloads the plugin configuration.")

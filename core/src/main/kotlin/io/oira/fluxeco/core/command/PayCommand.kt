@@ -1,6 +1,7 @@
 package io.oira.fluxeco.core.command
 
 import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.command.permissions.ConfigPermission
 import io.oira.fluxeco.core.manager.EconomyManager
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.MessageManager
@@ -13,14 +14,13 @@ import io.oira.fluxeco.core.util.parseNum
 import io.oira.fluxeco.core.lamp.AsyncOfflinePlayer
 import io.oira.fluxeco.core.redis.RedisManager
 import org.bukkit.entity.Player
-import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Description
-import revxrsal.commands.bukkit.annotation.CommandPermission
 import revxrsal.commands.annotation.Named
 import io.oira.fluxeco.core.util.Threads
+import revxrsal.commands.annotation.CommandPlaceholder
+import revxrsal.commands.orphan.OrphanCommand
 
-@Command("pay")
-class PayCommand {
+class PayCommand : OrphanCommand {
 
     private val plugin: FluxEco = FluxEco.instance
     private val messageManager: MessageManager = MessageManager.getInstance()
@@ -28,8 +28,9 @@ class PayCommand {
     private val mainConfigManager = ConfigManager(plugin, "config.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
+    @CommandPlaceholder
     @Description("Pays money to another player.")
-    @CommandPermission("fluxeco.command.pay")
+    @ConfigPermission("commands.pay.permission")
     fun pay(sender: Player, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()

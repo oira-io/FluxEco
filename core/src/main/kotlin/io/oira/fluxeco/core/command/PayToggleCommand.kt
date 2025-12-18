@@ -1,28 +1,29 @@
 package io.oira.fluxeco.core.command
 
 import io.oira.fluxeco.FluxEco
+import io.oira.fluxeco.core.command.permissions.ConfigPermission
 import io.oira.fluxeco.core.manager.ConfigManager
 import io.oira.fluxeco.core.manager.MessageManager
 import io.oira.fluxeco.core.manager.SettingsManager
 import io.oira.fluxeco.core.manager.SoundManager
 import org.bukkit.entity.Player
-import revxrsal.commands.annotation.Command
+import revxrsal.commands.annotation.CommandPlaceholder
 import revxrsal.commands.annotation.Description
 import revxrsal.commands.annotation.Named
 import revxrsal.commands.annotation.Optional
 import revxrsal.commands.annotation.Suggest
-import revxrsal.commands.bukkit.annotation.CommandPermission
+import revxrsal.commands.orphan.OrphanCommand
 
-class PayToggleCommand {
+class PayToggleCommand : OrphanCommand {
 
     private val plugin: FluxEco = FluxEco.instance
     private val messageManager: MessageManager = MessageManager.getInstance()
     private val configManager = ConfigManager(plugin, "messages.yml")
     private val foliaLib = FluxEco.instance.foliaLib
 
-    @Command("paytoggle")
+    @CommandPlaceholder
     @Description("Toggles whether you can receive payments.")
-    @CommandPermission("fluxeco.command.paytoggle")
+    @ConfigPermission("commands.pay-toggle.permission")
     fun payToggle(sender: Player, @Optional @Named("toggle") @Suggest("on", "off") toggle: String?) {
         val newState = when (toggle?.lowercase()) {
             "on" -> {
