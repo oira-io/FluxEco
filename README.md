@@ -28,7 +28,6 @@ FluxEco is a fully-featured economy plugin built with Kotlin, designed for Paper
   - Built-in metrics with bStats
 
 - **Highly Configurable**
-  - Customizable currency names (singular/plural)
   - Flexible number formatting (abbreviated or comma-separated)
   - Command enable/disable with per-command permissions
   - Advanced thread pool configuration
