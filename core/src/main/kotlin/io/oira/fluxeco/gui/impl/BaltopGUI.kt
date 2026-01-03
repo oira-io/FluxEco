@@ -133,8 +133,9 @@ class BaltopGUI : BaseGUI("gui/baltop-ui.yml") {
             if (balance != null) {
                 if (plugin.config.getBoolean("stats.enabled", true) &&
                     plugin.config.getBoolean("stats.open-clicked-player", true)) {
-                    player.closeInventory()
-                    plugin.statsGui.openForPlayer(player, uuid, true, currentPage)
+                    plugin.foliaLib.scheduler.runAtEntity(player) {
+                        plugin.statsGui.openForPlayer(player, uuid, true, currentPage)
+                    }
                 }
             } else {
                 messageManager.sendMessageFromConfig(player, "gui.player-data-not-found")

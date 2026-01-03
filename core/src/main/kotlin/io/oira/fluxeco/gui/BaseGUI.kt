@@ -194,7 +194,7 @@ abstract class BaseGUI(private val configFile: String) : InventoryHolder, Listen
         viewers.forEach { it.updateInventory() }
     }
 
-    private fun updateTitle() {
+    protected fun updateTitle() {
         val title = getTitleComponent()
         val size = privateInventory.size
         val newInventory = Bukkit.createInventory(this, size, title)

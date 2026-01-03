@@ -19,6 +19,8 @@
 package io.oira.fluxeco.manager
 
 import io.oira.fluxeco.FluxEco
+import org.bukkit.NamespacedKey
+import org.bukkit.Registry
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
@@ -47,7 +49,8 @@ class SoundManager private constructor() {
 
     fun playSound(player: Player, sound: String, volume: Float = 1.0f, pitch: Float = 1.0f) {
         try {
-            val bukkitSound = Sound.valueOf(sound.uppercase())
+            val key = NamespacedKey.minecraft(sound)
+            val bukkitSound = Registry.SOUNDS.get(key) ?: throw IllegalArgumentException("Sound not found")
             player.playSound(player, bukkitSound, SoundCategory.MASTER, volume, pitch)
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning("Invalid sound: $sound")
@@ -55,13 +58,13 @@ class SoundManager private constructor() {
     }
 
     fun playSoundFromConfig(player: Player, path: String, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        val sound = cfg.getString("sounds.$path") ?: return
+        val sound = cfg.getString(path) ?: return
         if (sound.isEmpty()) return
         playSound(player, sound, volume, pitch)
     }
 
     fun playSoundFromConfig(player: Player, path: String, config: ConfigManager?, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        val sound = cfg.getString("sounds.$path") ?: return
+        val sound = cfg.getString(path) ?: return
         if (sound.isEmpty()) return
         playSound(player, sound, volume, pitch)
     }

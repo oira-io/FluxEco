@@ -42,7 +42,7 @@ class BalanceCommand : OrphanCommand {
 
     @CommandPlaceholder
     @Description("Shows your current balance.")
-    @ConfigPermission("commands.balance.annotation.base")
+    @ConfigPermission("commands.balance.permissions.base")
     fun balance(sender: Player) {
         val player = AsyncOfflinePlayer.from(sender)
 
@@ -60,7 +60,7 @@ class BalanceCommand : OrphanCommand {
     }
 
     @Description("Shows another player's balance.")
-    @ConfigPermission("commands.balance.annotation.others")
+    @ConfigPermission("commands.balance.permissions.others")
     fun balanceOther(sender: Player, @Named("target") target: AsyncOfflinePlayer) {
         Threads.runAsync {
             val offlinePlayer = target.getOrFetch()

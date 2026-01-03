@@ -34,13 +34,14 @@ class HistoryCommand : OrphanCommand {
 
     @CommandPlaceholder
     @Description("Opens the transaction history GUI.")
-    @ConfigPermission("commands.transaction-history.annotation.base")
+    @ConfigPermission("commands.transaction-history.permissions.base")
     fun history(sender: Player) {
         FluxEco.instance.historyGui.open(sender)
     }
 
+    @CommandPlaceholder
     @Description("Opens the transaction history GUI for a specific player.")
-    @ConfigPermission("commands.transaction-history.annotation.others")
+    @ConfigPermission("commands.transaction-history.permissions.others")
     fun historyOther(sender: Player, @Named("target") target: AsyncOfflinePlayer) {
         Threads.runAsync {
             val offlinePlayer = target.getOrFetch()

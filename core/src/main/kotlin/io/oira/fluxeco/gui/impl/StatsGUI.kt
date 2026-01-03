@@ -43,11 +43,11 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
         registerSimpleAction("close") { it.closeInventory() }
         registerSimpleAction("back") { player ->
             if (openedFromBaltop) {
-                player.closeInventory()
-                FluxEco.instance.baltopGui.apply {
-                    currentPage = baltopPage
-                    open(player)
-                }
+                plugin.foliaLib.scheduler.runAtEntity(player) {
+                    FluxEco.instance.baltopGui.apply {
+                        currentPage = baltopPage
+                        open(player)
+                    }                }
             }
         }
     }
@@ -57,6 +57,7 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
         openedFromBaltop = fromBaltop
         baltopPage = page
         refreshItems()
+        updateTitle()
         super.open(viewer)
     }
 
@@ -78,10 +79,29 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
 
         val itemsSection = config.getConfigurationSection("items") ?: return
         itemsSection.getKeys(false).forEach { key ->
-            if (key == "back" && !openedFromBaltop) return@forEach
-
             val itemConfig = itemsSection.getConfigurationSection(key) ?: return@forEach
             val slot = itemConfig.getInt("slot", -1)
+
+            if (key == "back") {
+                if (!openedFromBaltop) {
+                    if (slot >= 0 && slot < inventory.size) {
+                        inventory.setItem(slot, null)
+                        usedSlots.remove(slot)
+                    }
+                    return@forEach
+                } else {
+                    if (slot >= 0 && slot < inventory.size) {
+                        val placeholders = createPlayerPlaceholders(player)
+                        val item = createItemFromConfig(itemConfig, key, placeholders)
+                        if (item != null) {
+                            inventory.setItem(slot, item)
+                            usedSlots.add(slot)
+                        }
+                    }
+                    return@forEach
+                }
+            }
+
             if (slot >= 0 && slot < inventory.size) {
                 val placeholders = createPlayerPlaceholders(player)
                 val item = createItemFromConfig(itemConfig, key, placeholders)
@@ -94,7 +114,15 @@ class StatsGUI : BaseGUI("gui/stats-ui.yml") {
 
     override fun onPreInit() {
         super.onPreInit()
-        refreshItems()
+        val itemsSection = config.getConfigurationSection("items") ?: return
+        val backConfig = itemsSection.getConfigurationSection("back")
+        if (backConfig != null) {
+            val backSlot = backConfig.getInt("slot", -1)
+            if (backSlot >= 0) {
+                usedSlots.remove(backSlot)
+                inventory.setItem(backSlot, null)
+            }
+        }
     }
 
     private fun createPlayerPlaceholders(player: Player?): Placeholders {

@@ -176,7 +176,7 @@ class MessageManager private constructor() {
         if (message.isEmpty()) return
 
         val actionPrefix = getMessage("prefix-action", config) ?: ""
-        val fullMessage = if (actionPrefix.isNotEmpty()) "$actionPrefix $message" else message
+        val fullMessage = if (actionPrefix.isNotEmpty()) "$actionPrefix$message" else message
 
         sendActionBar(player, fullMessage, placeholders)
     }
@@ -342,7 +342,7 @@ class MessageManager private constructor() {
             val prefixText = getPrefix()
             if (prefixText.isNotEmpty()) {
                 val processedPrefix = processText(prefixText)
-                processed = "$processedPrefix $processed"
+                processed = "$processedPrefix$processed"
             }
         }
 

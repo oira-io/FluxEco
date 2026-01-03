@@ -39,14 +39,10 @@ class StatsCommand : OrphanCommand {
         FluxEco.instance.statsGui.open(sender)
     }
 
+    @CommandPlaceholder
     @Description("Opens the stats GUI for a specific player.")
     @ConfigPermission("commands.stats.annotation.others")
     fun statsOther(sender: Player, @Named("target") target: AsyncOfflinePlayer) {
-        Threads.runAsync {
-            val offlinePlayer = target.getOrFetch()
-            foliaLib.scheduler.run {
-                FluxEco.instance.statsGui.openForPlayer(sender, offlinePlayer.uniqueId)
-            }
-        }
+        FluxEco.instance.statsGui.openForPlayer(sender, target.getOrFetch().uniqueId)
     }
 }

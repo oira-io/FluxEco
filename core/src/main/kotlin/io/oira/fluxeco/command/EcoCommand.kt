@@ -60,13 +60,12 @@ class EcoCommand : OrphanCommand {
     }
 
     @CommandPlaceholder
-    @ConfigPermission("commands.economy.annotation.base")
-    fun onCommand() {
-    }
+    @ConfigPermission("commands.economy.permissions.base")
+    fun onCommand() {}
 
     @Subcommand("give")
     @Description("Gives money to a player.")
-    @ConfigPermission("commands.economy.annotation.give")
+    @ConfigPermission("commands.economy.permissions.give")
     fun giveCommand(
         actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String
     ) {
@@ -112,7 +111,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("give *")
     @Description("Gives money to all online players.")
-    @ConfigPermission("commands.economy.annotation.give-all")
+    @ConfigPermission("commands.economy.permissions.give-all")
     fun giveCommandAll(actor: BukkitCommandActor, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -161,7 +160,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("take")
     @Description("Takes money from a player.")
-    @ConfigPermission("commands.economy.annotation.take")
+    @ConfigPermission("commands.economy.permissions.take")
     fun takeCommand(
         actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String
     ) {
@@ -216,7 +215,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("take *")
     @Description("Takes money from all online players.")
-    @ConfigPermission("commands.economy.annotation.take-all")
+    @ConfigPermission("commands.economy.permissions.take-all")
     fun takeCommandAll(actor: BukkitCommandActor, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -274,7 +273,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("set")
     @Description("Sets a player's balance.")
-    @ConfigPermission("commands.economy.annotation.set")
+    @ConfigPermission("commands.economy.permissions.set")
     fun setCommand(
         actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer, @Named("amount") amount: String
     ) {
@@ -320,7 +319,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("set *")
     @Description("Sets all online players' balance.")
-    @ConfigPermission("commands.economy.annotation.set-all")
+    @ConfigPermission("commands.economy.permissions.set-all")
     fun setCommandAll(actor: BukkitCommandActor, @Named("amount") amount: String) {
         val parsedAmount = try {
             amount.parseNum()
@@ -374,7 +373,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("reset")
     @Description("Resets a player's balance to 0.")
-    @ConfigPermission("commands.economy.annotation.reset")
+    @ConfigPermission("commands.economy.permissions.reset")
     fun resetCommand(actor: BukkitCommandActor, @Named("target") target: AsyncOfflinePlayer) {
         val adminUuid = actor.asPlayer()?.uniqueId ?: UUID(0, 0)
         Threads.runAsync {
@@ -399,7 +398,7 @@ class EcoCommand : OrphanCommand {
 
     @Subcommand("reset *")
     @Description("Resets all online players' balance to 0.")
-    @ConfigPermission("commands.economy.annotation.reset-all")
+    @ConfigPermission("commands.economy.permissions.reset-all")
     fun resetCommandAll(actor: BukkitCommandActor) {
         val adminUuid = actor.asPlayer()?.uniqueId ?: UUID(0, 0)
         Threads.runAsync {
