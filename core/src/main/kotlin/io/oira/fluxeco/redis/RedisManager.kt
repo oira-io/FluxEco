@@ -42,7 +42,6 @@ object RedisManager {
         isEnabled = cfg.getBoolean("redis.enabled", false)
 
         if (!isEnabled) {
-            plugin.logger.info("Redis is disabled in configuration")
             return
         }
 

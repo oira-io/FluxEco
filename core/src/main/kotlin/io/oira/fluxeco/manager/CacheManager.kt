@@ -95,9 +95,6 @@ object CacheManager {
             .build()
 
         startBackgroundTasks()
-
-        plugin.logger.info("CacheManager initialized with Caffeine")
-        plugin.logger.info("Baltop refresh: ${baltopRefreshSeconds}s, Periodic save: ${periodicSaveSeconds}s")
     }
 
     private fun loadConfiguration() {
@@ -134,8 +131,6 @@ object CacheManager {
         ) {
             saveAllToDatabase()
         }
-
-        plugin.logger.info("Background cache tasks started")
     }
 
     private fun stopBackgroundTasks() {

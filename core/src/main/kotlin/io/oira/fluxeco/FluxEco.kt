@@ -160,7 +160,6 @@ class FluxEco : JavaPlugin() {
     private fun initializeCache() {
         try {
             CacheManager.init()
-            logger.info("Cache system initialized successfully!")
         } catch (e: Exception) {
             logger.warning("Failed to initialize cache: ${e.message}")
         }
@@ -179,7 +178,6 @@ class FluxEco : JavaPlugin() {
             )
 
             IFluxEcoAPI.setInstance(api)
-            logger.info("FluxEco API initialized successfully!")
         } catch (e: Exception) {
             logger.severe("Failed to initialize API: ${e.message}")
             e.printStackTrace()
@@ -327,7 +325,8 @@ class FluxEco : JavaPlugin() {
             " &8▸ &fJava: &#B833FF{java_version}",
             " &8▸ &fOS: &#B833FF{os}",
             "",
-            " &#B833FFFluxEco &fenabled successfully!"
+            " &#B833FFFluxEco &fenabled successfully!",
+            "&f"
         )
 
         infoLines.forEach { line ->
